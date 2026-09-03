@@ -1,0 +1,985 @@
+﻿Laravel Intern Project - 2
+University & College Course Management System API
+Project Overview
+Build an API-only University & College Course Management System using Laravel.
+The system should allow a university or college to manage:
+* Faculties
+* Departments
+* Academic programs
+* Courses
+* Course prerequisites
+* Academic semesters
+* Students
+* Lecturers
+* Course offerings
+* Class enrollments
+* Class schedules
+* Attendance
+* Assignments
+* Assignment submissions
+* Exams
+* Grades
+* Announcements
+There will be no frontend.
+The application must expose REST APIs that could later be consumed by a web application, mobile application, or student portal.
+________________
+
+
+1. Database Design / ERD
+Before starting development, create an Entity Relationship Diagram (ERD) for the entire system.
+Do not start coding until the database design is completed.
+The ERD should identify:
+* Tables
+* Primary keys
+* Foreign keys
+* Relationships
+* Many-to-many relationships
+* Nullable relationships
+* Unique constraints
+* Important indexes
+You must decide the database structure yourself.
+Your ERD should at minimum support the following concepts:
+* University faculties
+* Academic departments
+* Programs
+* Courses
+* Course prerequisites
+* Academic semesters
+* Students
+* Lecturers
+* Course offerings
+* Course enrollments
+* Class schedules
+* Assignments
+* Assignment submissions
+* Attendance
+* Exams
+* Exam results
+* Final course grades
+* Announcements
+After completing the ERD, explain the reasoning behind the major relationships.
+________________
+
+
+2. Authentication
+Implement API authentication.
+Users should be able to log in using:
+POST /api/login
+Use Laravel Sanctum.
+The following types of users should exist:
+* Administrator
+* Lecturer
+* Student
+Users should only be able to access functionality they are authorized to use.
+Example:
+A student must not be able to create a course.
+A lecturer must not be able to modify another lecturer's course unless authorized.
+________________
+
+
+3. User Management
+Administrators should be able to:
+* Create users
+* Update users
+* Disable users
+* View users
+* Search users
+Users should have roles such as:
+* admin
+* lecturer
+* student
+Do not rely only on hiding routes.
+Proper server-side authorization must be implemented.
+________________
+
+
+4. Faculty Management
+A university can contain multiple faculties.
+Examples:
+* Faculty of Engineering
+* Faculty of Business
+* Faculty of Computing
+* Faculty of Health Sciences
+Administrators should be able to:
+* Create faculty
+* Update faculty
+* Delete faculty
+* View faculty
+* List faculties
+Deleting a faculty containing departments should be handled properly.
+________________
+
+
+5. Department Management
+Each department belongs to a faculty.
+Example:
+Faculty of Computing
+* Department of Software Engineering
+* Department of Computer Science
+* Department of Information Systems
+Implement APIs for:
+* Creating departments
+* Updating departments
+* Listing departments
+* Viewing departments
+* Deleting departments
+Allow filtering departments by faculty.
+Example:
+GET /api/departments?faculty_id=...
+________________
+
+
+6. Academic Programs
+Departments may offer programs.
+Examples:
+* Bachelor of Software Engineering
+* Bachelor of Computer Science
+* Diploma in Information Technology
+A program should contain information such as:
+* Name
+* Code
+* Department
+* Qualification level
+* Duration
+* Total required credits
+* Status
+Implement APIs for managing programs.
+________________
+
+
+7. Course Management
+Administrators should be able to create courses.
+Example:
+Code: CS101
+Name: Introduction to Programming
+Credits: 3
+Department: Computer Science
+Courses may belong to one or more programs.
+Courses should have information such as:
+* Course code
+* Name
+* Description
+* Credit value
+* Department
+* Course level
+* Active/inactive status
+Implement:
+* Course creation
+* Course editing
+* Course deletion
+* Course details
+* Course listing
+* Search by course code/name
+* Filtering by department
+* Filtering by program
+________________
+
+
+8. Course Prerequisites
+Courses may have prerequisites.
+Example:
+CS201 – Data Structures
+requires
+CS101 – Introduction to Programming
+A course may have multiple prerequisites.
+The system must prevent invalid prerequisite relationships.
+Examples:
+A course cannot be its own prerequisite.
+Circular prerequisite relationships should not be allowed.
+Example:
+CS101 → CS201
+CS201 → CS101
+should not be possible.
+________________
+
+
+9. Academic Semesters
+The system should support academic semesters.
+Example:
+Semester 1 – 2026
+Fields may include:
+* Name
+* Academic year
+* Start date
+* End date
+* Registration start date
+* Registration end date
+* Status
+Possible statuses:
+* upcoming
+* registration_open
+* active
+* completed
+Administrators should manage semesters.
+________________
+
+
+10. Course Offerings
+A course is the permanent academic definition.
+A course offering represents that course being taught during a particular semester.
+Example:
+Course:
+CS101 – Introduction to Programming
+Course Offering:
+CS101
+Semester 1 – 2026
+Lecturer: Ahmed
+Capacity: 40
+The same course may therefore have multiple offerings over time.
+Course offerings should support:
+* Course
+* Semester
+* Lecturer
+* Maximum number of students
+* Enrollment status
+* Start/end dates if required
+________________
+
+
+11. Lecturer Assignment
+Administrators should assign lecturers to course offerings.
+A lecturer should be able to retrieve:
+GET /api/lecturer/course-offerings
+and see only the courses assigned to them.
+Lecturers should not be able to modify course offerings assigned to other lecturers.
+Use proper Laravel authorization.
+________________
+
+
+12. Student Management
+Administrators should be able to register students.
+Student information may include:
+* Student number
+* Name
+* Email
+* Program
+* Enrollment year
+* Current semester/year
+* Status
+Possible status:
+* active
+* suspended
+* graduated
+* withdrawn
+Student numbers must be unique.
+________________
+
+
+13. Course Registration / Enrollment
+Students should be able to enroll in course offerings.
+Example:
+POST /api/course-offerings/{id}/enroll
+Before enrollment, validate:
+* Registration period is open
+* Student is active
+* Course offering has available capacity
+* Student is not already enrolled
+* Required prerequisites have been completed
+* Student is allowed to take the course
+* Course offering belongs to an active/upcoming semester
+The enrollment should not simply insert a database row.
+Implement proper business logic.
+________________
+
+
+14. Enrollment Capacity
+A course offering may have:
+maximum_students = 30
+If 30 students have already enrolled, student number 31 should not be allowed to enroll.
+The implementation should also consider multiple simultaneous enrollment requests.
+Avoid allowing the capacity to be exceeded because of a race condition.
+________________
+
+
+15. Course Withdrawal
+Students should be able to withdraw from a course.
+Example:
+DELETE /api/enrollments/{id}
+Withdrawal should only be allowed before a configured withdrawal deadline.
+Store the enrollment status instead of necessarily deleting historical records.
+Possible statuses:
+* enrolled
+* withdrawn
+* completed
+* failed
+________________
+
+
+16. Class Schedule
+A course offering can contain multiple scheduled classes.
+Example:
+CS101
+Sunday
+09:00 – 11:00
+Room A201
+Tuesday
+09:00 – 11:00
+Room A201
+Schedule information should contain:
+* Day/date
+* Start time
+* End time
+* Room/location
+* Course offering
+Prevent obvious schedule problems.
+For example:
+A lecturer should not be assigned to two classes occurring at the same time.
+A classroom should not be allocated to two classes at the same time.
+________________
+
+
+17. Attendance
+Lecturers should be able to record attendance.
+Attendance should be recorded per scheduled class/session.
+Possible statuses:
+* present
+* absent
+* late
+* excused
+Only students enrolled in the course should have attendance recorded.
+Lecturers should only record attendance for courses assigned to them.
+Students should be able to view their own attendance.
+Example:
+GET /api/me/attendance
+________________
+
+
+18. Assignments
+Lecturers should be able to create assignments for their course offerings.
+Assignment fields may include:
+* Title
+* Description
+* Due date
+* Maximum marks
+* Attachment
+* Status
+Students enrolled in the course should be able to view assignments.
+________________
+
+
+19. File Upload
+Assignments should support attachments.
+Example:
+Lecturer uploads:
+assignment-1.pdf
+Use Laravel's filesystem abstraction.
+Do not manually write files directly into random directories.
+Support storage through Laravel's configured disk.
+Validate:
+* File type
+* File size
+Store file information in the database.
+________________
+
+
+20. Assignment Submission
+Students should be able to submit assignments.
+Example:
+POST /api/assignments/{id}/submit
+A submission may contain:
+* Uploaded file
+* Comment
+* Submitted at
+* Submission status
+The system should determine whether the submission is:
+* on_time
+* late
+based on the assignment deadline.
+A student must not submit an assignment for a course they are not enrolled in.
+________________
+
+
+21. Assignment Grading
+Lecturers should be able to grade submissions.
+Store:
+* Marks
+* Lecturer feedback
+* Graded at
+* Graded by
+Ensure marks cannot exceed the assignment's maximum marks.
+Only the lecturer responsible for the course should normally grade the submission.
+________________
+
+
+22. Exams
+Lecturers or administrators should be able to create examinations.
+Examples:
+* Midterm Exam
+* Final Exam
+* Quiz
+Fields may include:
+* Course offering
+* Exam type
+* Exam date
+* Maximum marks
+* Weight
+Students should be able to view upcoming exams.
+________________
+
+
+23. Exam Results
+Lecturers should enter exam results for enrolled students.
+Validate:
+marks <= maximum_marks
+Students should only be able to view their own results.
+________________
+
+
+24. Final Course Grades
+Calculate a student's final course score using weighted assessments.
+Example:
+Assignments = 30%
+Midterm = 20%
+Final Exam = 50%
+Total:
+assignment_score × 0.30
++ midterm_score × 0.20
++ final_exam_score × 0.50
+Convert the resulting score into grades.
+Example:
+90–100 = A
+80–89 = B
+70–79 = C
+60–69 = D
+Below 60 = F
+Do not hardcode the calculation directly inside a controller.
+Design the application so grading rules can be maintained properly.
+________________
+
+
+25. Announcements
+Lecturers should be able to publish announcements to students enrolled in their courses.
+Example:
+"Tomorrow's CS101 class has been moved to Room B305."
+Announcements should contain:
+* Title
+* Message
+* Course offering
+* Published date
+* Author
+Students should retrieve announcements for courses in which they are enrolled.
+________________
+
+
+26. Notifications
+When an announcement is published, enrolled students should receive a Laravel notification.
+Also send notifications when appropriate, such as:
+* New assignment published
+* Assignment graded
+* Exam result published
+* Enrollment approved
+Use Laravel's Notification system.
+At least one notification should be queued.
+________________
+
+
+27. Queues
+Some actions should happen asynchronously.
+Examples:
+When a lecturer publishes an announcement to 500 students, the API request should not wait while 500 emails are sent.
+Use Laravel queues.
+Implement at least:
+* One custom Job
+* One queued Notification
+Example:
+SendCourseAnnouncementNotifications
+________________
+
+
+28. Events and Listeners
+Use Laravel Events and Listeners for appropriate business actions.
+Example:
+After a student enrolls:
+StudentEnrolled
+Listeners might:
+* Log the enrollment
+* Send notification
+* Update statistics
+Another example:
+AssignmentGraded
+→ NotifyStudentOfGrade
+Do not place every side effect directly inside controllers.
+________________
+
+
+29. Scheduled Tasks
+Implement Laravel scheduling.
+For example, every day the system could:
+* Find overdue assignments
+* Close expired registration periods
+* Mark semesters as active when their start date arrives
+* Generate reminders for upcoming exams
+Create at least one Artisan command and schedule it.
+Example:
+php artisan university:send-assignment-reminders
+________________
+
+
+30. Authorization Policies
+Use Laravel Policies.
+Examples:
+CoursePolicy
+AssignmentPolicy
+CourseOfferingPolicy
+SubmissionPolicy
+An assignment should only be editable by the lecturer responsible for its course.
+A student should only view submissions belonging to themselves.
+Do not put every authorization rule directly inside controllers.
+________________
+
+
+31. Validation
+Use Laravel Form Request classes.
+Examples:
+* StoreCourseRequest
+* UpdateCourseRequest
+* EnrollCourseRequest
+* StoreAssignmentRequest
+* GradeSubmissionRequest
+Controllers should not contain large validation arrays.
+Create appropriate custom validation rules where needed.
+________________
+
+
+32. API Resources
+Use Laravel API Resources.
+Examples:
+* CourseResource
+* StudentResource
+* AssignmentResource
+* CourseOfferingResource
+Do not directly return Eloquent models everywhere.
+Example:
+return new CourseResource($course);
+Collections should also use Resources.
+________________
+
+
+33. Filtering
+List endpoints should support filtering.
+Example:
+GET /api/courses?department_id=123
+GET /api/students?program_id=456
+GET /api/course-offerings?semester_id=789
+GET /api/enrollments?status=enrolled
+Use query scopes or another clean approach.
+________________
+
+
+34. Search
+Implement search.
+Examples:
+GET /api/students?search=Ahmed
+Search by:
+* Student name
+* Student number
+* Email
+Courses should be searchable by:
+* Code
+* Name
+________________
+
+
+35. Sorting
+Allow selected endpoints to be sorted.
+Example:
+GET /api/courses?sort=name
+GET /api/courses?sort=-created_at
+Do not allow arbitrary user-supplied database columns without validation.
+________________
+
+
+36. Pagination
+Large collections must be paginated.
+Example:
+GET /api/students?page=2&per_page=20
+Set a reasonable maximum per_page value.
+For example, a user should not be able to request:
+per_page=1000000
+________________
+
+
+37. Database Transactions
+Use database transactions for operations involving multiple related changes.
+Course enrollment is one example.
+A transaction may need to:
+1. Verify capacity.
+2. Create enrollment.
+3. Update related information.
+4. Dispatch relevant application logic.
+Failure should not leave the database in an inconsistent state.
+________________
+
+
+38. Eloquent Relationships
+The project should demonstrate meaningful usage of:
+* belongsTo
+* hasMany
+* belongsToMany
+Use additional relationship types if your database design naturally requires them.
+Avoid manually performing joins when Eloquent relationships would be appropriate.
+________________
+
+
+39. Eager Loading
+Avoid N+1 query problems.
+Example:
+When retrieving course offerings with:
+* Course
+* Lecturer
+* Semester
+use proper eager loading.
+Be prepared to demonstrate the number of SQL queries executed.
+________________
+
+
+40. Model Scopes
+Create reusable Eloquent scopes.
+Examples:
+Student::active()
+Semester::active()
+CourseOffering::openForEnrollment()
+Enrollment::completed()
+________________
+
+
+41. Route Model Binding
+Use Laravel Route Model Binding.
+Instead of:
+Course::findOrFail($id)
+where appropriate, routes should use:
+/courses/{course}
+and controllers should receive:
+Course $course
+Consider custom bindings such as using the course code.
+Example:
+/courses/CS101
+________________
+
+
+42. Soft Deletes
+Determine which entities should use soft deletes.
+Potential examples:
+* Students
+* Courses
+* Programs
+Explain why you chose to keep deleted records.
+Do not blindly apply soft deletes to every table.
+________________
+
+
+43. Database Seeders and Factories
+Create factories for major models.
+Examples:
+* User
+* Student
+* Lecturer
+* Course
+* Program
+* Semester
+* CourseOffering
+* Enrollment
+Create seeders capable of producing realistic development data.
+The project should be usable immediately after running:
+php artisan migrate:fresh --seed
+________________
+
+
+44. API Rate Limiting
+Implement appropriate API rate limiting.
+Examples:
+Login:
+5 requests / minute
+General authenticated API:
+A reasonable limit such as:
+60 requests / minute
+Consider whether expensive endpoints require stricter limits.
+________________
+
+
+45. Error Handling
+Return consistent JSON errors.
+Example:
+{
+    "message": "Course enrollment failed.",
+    "errors": {
+        "course": [
+            "Course capacity has been reached."
+        ]
+    }
+}
+
+
+Do not return HTML error pages from API endpoints.
+________________
+
+
+46. Logging
+Log important operations.
+Examples:
+* Failed login attempts
+* Enrollment errors
+* Failed queued jobs
+* Grade changes
+* Administrative actions
+Do not log sensitive information such as passwords or authentication tokens.
+________________
+
+
+47. Testing
+Testing is mandatory.
+Use Laravel's testing framework with PHPUnit or Pest.
+At minimum create tests for:
+Authentication
+* Login succeeds
+* Invalid login fails
+* Unauthenticated users cannot access protected routes
+Courses
+* Admin can create course
+* Student cannot create course
+* Course validation works
+Enrollment
+* Student can enroll
+* Student cannot enroll twice
+* Student cannot enroll when capacity is reached
+* Student cannot enroll without prerequisites
+* Student cannot enroll outside registration period
+Assignments
+* Lecturer can create assignment
+* Student cannot create assignment
+* Non-enrolled student cannot submit
+* Student can submit
+* Late submission is detected
+Grading
+* Lecturer can grade
+* Marks cannot exceed maximum
+* Student cannot grade submission
+* Another lecturer cannot grade the submission
+Use factories rather than manually building large amounts of test data.
+________________
+
+
+48. Required Architecture
+Use a clean project structure.
+Suggested flow:
+Route
+→ Controller
+→ Service
+→ Model / Repository where appropriate
+Do not create giant controllers.
+Controllers should primarily:
+* Accept request
+* Check authorization
+* Call application/business logic
+* Return API Resource
+Business rules such as enrollment eligibility should not be scattered throughout controllers.
+________________
+
+
+49. Minimum API Endpoints
+The project should contain at least 30 meaningful API endpoints.
+Examples include:
+Authentication
+POST /api/login
+POST /api/logout
+GET /api/me
+Faculties
+GET /api/faculties
+POST /api/faculties
+GET /api/faculties/{faculty}
+PATCH /api/faculties/{faculty}
+DELETE /api/faculties/{faculty}
+Departments
+GET /api/departments
+POST /api/departments
+GET /api/departments/{department}
+PATCH /api/departments/{department}
+Programs
+GET /api/programs
+POST /api/programs
+GET /api/programs/{program}
+Courses
+GET /api/courses
+POST /api/courses
+GET /api/courses/{course}
+PATCH /api/courses/{course}
+DELETE /api/courses/{course}
+Semesters
+GET /api/semesters
+POST /api/semesters
+Course Offerings
+GET /api/course-offerings
+POST /api/course-offerings
+GET /api/course-offerings/{courseOffering}
+Enrollment
+POST /api/course-offerings/{courseOffering}/enroll
+DELETE /api/enrollments/{enrollment}
+GET /api/me/enrollments
+Assignments
+GET /api/course-offerings/{courseOffering}/assignments
+POST /api/course-offerings/{courseOffering}/assignments
+POST /api/assignments/{assignment}/submit
+Grading
+GET /api/assignments/{assignment}/submissions
+PATCH /api/submissions/{submission}/grade
+Attendance
+POST /api/class-sessions/{session}/attendance
+GET /api/me/attendance
+Exams
+POST /api/course-offerings/{courseOffering}/exams
+POST /api/exams/{exam}/results
+GET /api/me/results
+Announcements
+POST /api/course-offerings/{courseOffering}/announcements
+GET /api/me/announcements
+The exact API design is part of the assignment.
+You may improve the route structure if you can justify your design.
+________________
+
+
+50. Technical Requirements
+Use:
+* Laravel
+* PHP
+* MySQL or PostgreSQL
+* Laravel Sanctum
+* Eloquent ORM
+* Laravel API Resources
+* Form Requests
+* Policies
+* Events
+* Listeners
+* Notifications
+* Queues
+* Jobs
+* Artisan Commands
+* Task Scheduler
+* Filesystem
+* Database transactions
+* Model factories
+* Seeders
+* Automated tests
+The application must be API only.
+Do not implement Blade pages.
+________________
+
+
+Required Deliverables
+Submit:
+1. Source code
+2. README.md
+3. ERD
+4. Database migrations
+5. Seeders
+6. Model factories
+7. API documentation
+8. Postman collection
+9. Automated tests
+________________
+
+
+README Requirements
+The README must explain:
+* Project overview
+* System architecture
+* Installation steps
+* Environment configuration
+* Database setup
+* Running migrations
+* Running seeders
+* Running queue workers
+* Running scheduled tasks
+* Running tests
+* Authentication mechanism
+* Major business rules
+________________
+
+
+API Documentation
+Document every endpoint.
+Each endpoint should include:
+* HTTP method
+* URL
+* Required permission/role
+* Request body
+* Query parameters
+* Example request
+* Example response
+* Possible validation errors
+A Postman collection should also be included.
+________________
+
+
+Evaluation Criteria
+The project will be evaluated based on:
+Database Design
+* Correct relationships
+* Good normalization
+* Appropriate indexes
+* Proper constraints
+Laravel Knowledge
+Correct usage of:
+* Eloquent
+* Relationships
+* Form Requests
+* API Resources
+* Policies
+* Events
+* Queues
+* Notifications
+* Jobs
+* Scheduler
+* Route Model Binding
+* Transactions
+* Factories
+* Seeders
+Code Quality
+* Small controllers
+* Reusable business logic
+* Clear naming
+* Proper separation of responsibilities
+* Avoiding duplicated logic
+Security
+* Authentication
+* Authorization
+* Input validation
+* Safe file uploads
+* Rate limiting
+Performance
+* Pagination
+* Eager loading
+* Avoiding N+1 problems
+* Appropriate database indexes
+Testing
+* Business-rule tests
+* Authorization tests
+* Validation tests
+* API tests
+________________
+
+
+Important Rule
+This project is not a CRUD exercise.
+The purpose is to demonstrate that you understand how to build a real Laravel application with business rules.
+For example, implementing:
+POST /course-offerings/{course}/enroll
+as:
+Enrollment::create([
+    'student_id' => auth()->id(),
+    'course_offering_id' => $course->id
+]);
+
+
+is not sufficient.
+You must handle:
+* Authorization
+* Course capacity
+* Duplicate enrollment
+* Semester status
+* Registration dates
+* Student status
+* Prerequisites
+* Transactions
+* Race conditions
+* Notifications
+The quality of these business rules will be an important part of the assessment.
