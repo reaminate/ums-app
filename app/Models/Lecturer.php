@@ -11,13 +11,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 #[Fillable(['user_id', 'staff_number', 'name', 'email', 'department_id', 'status'])]
 #[Hidden('user_id')]
-class Lecturer extends Model
+class staff extends Model
 {
-    /** @use HasFactory<\Database\Factories\LecturerFactory> */
+    /** @use HasFactory<\Database\Factories\staffFactory> */
     use HasFactory, SoftDeletes;
     public function assignmentMarks(): HasMany
     {
-        return $this->hasMany(AssignmentMark::class, 'lecturer_id');
+        return $this->hasMany(AssignmentMark::class, 'staff_id');
     }
     public function user(): BelongsTo 
     {
@@ -29,6 +29,14 @@ class Lecturer extends Model
     }
     public function courseOfferings(): HasMany
     {
-        return $this->hasMany(CourseOffering::class, 'lecturer_id');
+        return $this->hasMany(CourseOffering::class, 'staff_id');
+    }
+    protected static function booted():void
+    {
+        static::created(function($model){
+            $staff_id_number =(int) round(((($model->id + 576.57)*162.30987)-10)/30.3);
+
+            $model->staff_number = "L0.$staff_id_number";
+        });
     }
 }

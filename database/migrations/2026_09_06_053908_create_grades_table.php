@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unique(['student_id', 'course_offering_id']);
             $table->float('total_assignment_score');
             $table->float('total_test_marks');
-            $table->char('grade_score', 1);
+            $table->char('grade_score', 1)->default('X');
             $table->softDeletes();
             $table->timestamps();
         });

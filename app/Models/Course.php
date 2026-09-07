@@ -39,4 +39,14 @@ class Course extends Model
         return $this->belongsToMany(Course::class, 'course_prerequisite', 'prerequisite_id', 'course_id')
             ->using(CoursePrerequisite::class);
     }
+    protected static function booted(): void
+    {
+        static::creating(function($model){
+            $initials = collect(preg_split('/\s+/', trim($model->name)))
+            ->filter(fn (string $word) => ctype_upper($word[0] ?? ''))
+            ->map(fn (string $word) => strtoupper($word[0]))
+            ->implode('');
+            $model->code = $initials.$model->course_level.str_pad((string) random_int(0, 99), 2, '0', STR_PAD_LEFT);
+        });
+    }
 }

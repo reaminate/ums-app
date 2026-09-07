@@ -18,7 +18,7 @@ class FacultyFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => "Faculty of ".fake()->unique()->word(),
         ];
     }
 }

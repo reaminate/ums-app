@@ -20,6 +20,27 @@ class Grade extends Model
     {
         return $this->belongsTo(CourseOffering::class, 'course_offering_id');
     }
-    
+    protected static function booted():void
+    {
+        static::saving(function($model){
+            $total = $model->total_assignment_score+$model->total_test_marks;
+            switch(true){
+                case ($total>=75):
+                    $model->grade_score = 'A';
+                break;
+                case ($total>=60):
+                    $model->grade_score = 'B';
+                break;
+                case ($total>=50):
+                    $model->grade_score = 'C';
+                break;
+                case ($total>=40):
+                    $model->grade_score = 'D';
+                break;
+                default:
+                    $model->grade_score = 'F';
+            }
+        });
+    }
     
 }

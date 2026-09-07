@@ -27,5 +27,50 @@ class AcademicProgram extends Model
     {
         return $this->hasMany(Student::class, 'program_id');
     }
-    
+    protected static function booted(): void
+    {
+        static::creating(function (self $model) {
+            if (empty($model->code)) {
+                $model->code = static::generateCode($model->name);
+            }
+        });
+    }
+
+    public static function generateCode(string $name): string
+    {
+        $qualificationLetters = [
+            'bachelor' => 'B',
+            'bachelors' => 'B',
+            'diploma' => 'D',
+            'master' => 'M',
+            'masters' => 'M',
+            'phd' => 'P',
+            'doctorate' => 'P',
+        ];
+
+        $ignoredWords = ['in', 'of', 'and', 'the'];
+
+        $words = array_values(array_filter(preg_split('/\s+/', trim($name))));
+
+        if (empty($words)) {
+            return '';
+        }
+
+        $qualification = strtolower(array_shift($words));
+        $code = $qualificationLetters[$qualification] ?? strtoupper(substr($qualification, 0, 1));
+
+        foreach ($words as $word) {
+            if (in_array(strtolower($word), $ignoredWords, true)) {
+                continue;
+            }
+            $code .= strtoupper(substr($word, 0, 1));
+        }
+
+        $baseCode = $code;
+        for ($suffix = 1; static::where('code', $code)->exists(); $suffix++) {
+            $code = $baseCode.$suffix;
+        }
+
+        return $code;
+    }
 }
