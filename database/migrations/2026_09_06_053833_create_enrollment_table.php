@@ -12,7 +12,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('enrollement', function (Blueprint $table) {
+        Schema::create('enrollment', function (Blueprint $table) {
             $table->foreignId('student_id')->constrained('students')->cascadeOnDelete();
             $table->foreignId('course_offering_id')->constrained('course_offerings')->cascadeOnDelete();
             $table->enum('status', array_column(EnrollmentStatus::cases(), 'value'))->default(EnrollmentStatus::ENROLLED->value);
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('enrollement');
+        Schema::dropIfExists('enrollment');
     }
 };

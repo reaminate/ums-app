@@ -2,11 +2,11 @@
 
 namespace Database\Factories;
 
-use App\Models\Academic_program;
+use App\Models\AcademicProgram;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Academic_program>
+ * @extends Factory<AcademicProgram>
  */
 class AcademicProgramFactory extends Factory
 {

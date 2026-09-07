@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Exam_mark;
-use App\Http\Requests\StoreExam_markRequest;
-use App\Http\Requests\UpdateExam_markRequest;
+use App\Models\ExamMark;
+use App\Http\Requests\StoreExamMarkRequest;
+use App\Http\Requests\UpdateExamMarkRequest;
 
 class ExamMarkController extends Controller
 {
@@ -19,7 +19,7 @@ class ExamMarkController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreExam_markRequest $request)
+    public function store(StoreExamMarkRequest $request)
     {
         //
     }
@@ -27,7 +27,7 @@ class ExamMarkController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Exam_mark $exam_mark)
+    public function show(ExamMark $exam_mark)
     {
         //
     }
@@ -35,7 +35,7 @@ class ExamMarkController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateExam_markRequest $request, Exam_mark $exam_mark)
+    public function update(UpdateExamMarkRequest $request, ExamMark $exam_mark)
     {
         //
     }
@@ -43,7 +43,7 @@ class ExamMarkController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Exam_mark $exam_mark)
+    public function destroy(ExamMark $exam_mark)
     {
         //
     }

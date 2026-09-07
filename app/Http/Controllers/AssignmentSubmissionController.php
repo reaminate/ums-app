@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Assignment_submission;
-use App\Http\Requests\StoreAssignment_submissionRequest;
-use App\Http\Requests\UpdateAssignment_submissionRequest;
+use App\Models\AssignmentSubmission;
+use App\Http\Requests\StoreAssignmentSubmissionRequest;
+use App\Http\Requests\UpdateAssignmentSubmissionRequest;
 
 class AssignmentSubmissionController extends Controller
 {
@@ -19,7 +19,7 @@ class AssignmentSubmissionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreAssignment_submissionRequest $request)
+    public function store(StoreAssignmentSubmissionRequest $request)
     {
         //
     }
@@ -27,7 +27,7 @@ class AssignmentSubmissionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Assignment_submission $assignment_submission)
+    public function show(AssignmentSubmission $assignment_submission)
     {
         //
     }
@@ -35,7 +35,7 @@ class AssignmentSubmissionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAssignment_submissionRequest $request, Assignment_submission $assignment_submission)
+    public function update(UpdateAssignmentSubmissionRequest $request, AssignmentSubmission $assignment_submission)
     {
         //
     }
@@ -43,7 +43,7 @@ class AssignmentSubmissionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Assignment_submission $assignment_submission)
+    public function destroy(AssignmentSubmission $assignment_submission)
     {
         //
     }

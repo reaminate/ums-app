@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Academic_program;
-use App\Http\Requests\StoreAcademic_programRequest;
-use App\Http\Requests\UpdateAcademic_programRequest;
+use App\Models\AcademicProgram;
+use App\Http\Requests\StoreAcademicProgramRequest;
+use App\Http\Requests\UpdateAcademicProgramRequest;
 
 class AcademicProgramController extends Controller
 {
@@ -19,7 +19,7 @@ class AcademicProgramController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreAcademic_programRequest $request)
+    public function store(StoreAcademicProgramRequest $request)
     {
         //
     }
@@ -27,7 +27,7 @@ class AcademicProgramController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Academic_program $academic_program)
+    public function show(AcademicProgram $academic_program)
     {
         //
     }
@@ -35,7 +35,7 @@ class AcademicProgramController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAcademic_programRequest $request, Academic_program $academic_program)
+    public function update(UpdateAcademicProgramRequest $request, AcademicProgram $academic_program)
     {
         //
     }
@@ -43,7 +43,7 @@ class AcademicProgramController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Academic_program $academic_program)
+    public function destroy(AcademicProgram $academic_program)
     {
         //
     }

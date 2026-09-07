@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Assignment_mark;
-use App\Http\Requests\StoreAssignment_markRequest;
-use App\Http\Requests\UpdateAssignment_markRequest;
+use App\Models\AssignmentMark;
+use App\Http\Requests\StoreAssignmentMarkRequest;
+use App\Http\Requests\UpdateAssignmentMarkRequest;
 
 class AssignmentMarkController extends Controller
 {
@@ -19,7 +19,7 @@ class AssignmentMarkController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreAssignment_markRequest $request)
+    public function store(StoreAssignmentMarkRequest $request)
     {
         //
     }
@@ -27,7 +27,7 @@ class AssignmentMarkController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Assignment_mark $assignment_mark)
+    public function show(AssignmentMark $assignment_mark)
     {
         //
     }
@@ -35,7 +35,7 @@ class AssignmentMarkController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAssignment_markRequest $request, Assignment_mark $assignment_mark)
+    public function update(UpdateAssignmentMarkRequest $request, AssignmentMark $assignment_mark)
     {
         //
     }
@@ -43,7 +43,7 @@ class AssignmentMarkController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Assignment_mark $assignment_mark)
+    public function destroy(AssignmentMark $assignment_mark)
     {
         //
     }

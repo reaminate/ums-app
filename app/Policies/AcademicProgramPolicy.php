@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Models\Academic_program;
+use App\Models\AcademicProgram;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
@@ -19,7 +19,7 @@ class AcademicProgramPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Academic_program $academicProgram): bool
+    public function view(User $user, AcademicProgram $academicProgram): bool
     {
         return false;
     }
@@ -35,7 +35,7 @@ class AcademicProgramPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Academic_program $academicProgram): bool
+    public function update(User $user, AcademicProgram $academicProgram): bool
     {
         return false;
     }
@@ -43,7 +43,7 @@ class AcademicProgramPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Academic_program $academicProgram): bool
+    public function delete(User $user, AcademicProgram $academicProgram): bool
     {
         return false;
     }
@@ -51,7 +51,7 @@ class AcademicProgramPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Academic_program $academicProgram): bool
+    public function restore(User $user, AcademicProgram $academicProgram): bool
     {
         return false;
     }
@@ -59,7 +59,7 @@ class AcademicProgramPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Academic_program $academicProgram): bool
+    public function forceDelete(User $user, AcademicProgram $academicProgram): bool
     {
         return false;
     }

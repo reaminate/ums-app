@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Class_schedule;
-use App\Http\Requests\StoreClass_scheduleRequest;
-use App\Http\Requests\UpdateClass_scheduleRequest;
+use App\Models\ClassSchedule;
+use App\Http\Requests\StoreClassScheduleRequest;
+use App\Http\Requests\UpdateClassScheduleRequest;
 
 class ClassScheduleController extends Controller
 {
@@ -19,7 +19,7 @@ class ClassScheduleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreClass_scheduleRequest $request)
+    public function store(StoreClassScheduleRequest $request)
     {
         //
     }
@@ -27,7 +27,7 @@ class ClassScheduleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Class_schedule $class_schedule)
+    public function show(ClassSchedule $class_schedule)
     {
         //
     }
@@ -35,7 +35,7 @@ class ClassScheduleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateClass_scheduleRequest $request, Class_schedule $class_schedule)
+    public function update(UpdateClassScheduleRequest $request, ClassSchedule $class_schedule)
     {
         //
     }
@@ -43,7 +43,7 @@ class ClassScheduleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Class_schedule $class_schedule)
+    public function destroy(ClassSchedule $class_schedule)
     {
         //
     }

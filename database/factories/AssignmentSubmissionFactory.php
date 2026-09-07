@@ -2,11 +2,11 @@
 
 namespace Database\Factories;
 
-use App\Models\Assignment_submission;
+use App\Models\AssignmentSubmission;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Assignment_submission>
+ * @extends Factory<AssignmentSubmission>
  */
 class AssignmentSubmissionFactory extends Factory
 {

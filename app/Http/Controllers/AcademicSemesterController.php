@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Academic_semester;
-use App\Http\Requests\StoreAcademic_semesterRequest;
-use App\Http\Requests\UpdateAcademic_semesterRequest;
+use App\Models\AcademicSemester;
+use App\Http\Requests\StoreAcademicSemesterRequest;
+use App\Http\Requests\UpdateAcademicSemesterRequest;
 
 class AcademicSemesterController extends Controller
 {
@@ -19,7 +19,7 @@ class AcademicSemesterController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreAcademic_semesterRequest $request)
+    public function store(StoreAcademicSemesterRequest $request)
     {
         //
     }
@@ -27,7 +27,7 @@ class AcademicSemesterController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Academic_semester $academic_semester)
+    public function show(AcademicSemester $academic_semester)
     {
         //
     }
@@ -35,7 +35,7 @@ class AcademicSemesterController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAcademic_semesterRequest $request, Academic_semester $academic_semester)
+    public function update(UpdateAcademicSemesterRequest $request, AcademicSemester $academic_semester)
     {
         //
     }
@@ -43,7 +43,7 @@ class AcademicSemesterController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Academic_semester $academic_semester)
+    public function destroy(AcademicSemester $academic_semester)
     {
         //
     }

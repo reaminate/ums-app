@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Course_offering;
-use App\Http\Requests\StoreCourse_offeringRequest;
-use App\Http\Requests\UpdateCourse_offeringRequest;
+use App\Models\CourseOffering;
+use App\Http\Requests\StoreCourseOfferingRequest;
+use App\Http\Requests\UpdateCourseOfferingRequest;
 
 class CourseOfferingController extends Controller
 {
@@ -19,7 +19,7 @@ class CourseOfferingController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreCourse_offeringRequest $request)
+    public function store(StoreCourseOfferingRequest $request)
     {
         //
     }
@@ -27,7 +27,7 @@ class CourseOfferingController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Course_offering $course_offering)
+    public function show(CourseOffering $course_offering)
     {
         //
     }
@@ -35,7 +35,7 @@ class CourseOfferingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCourse_offeringRequest $request, Course_offering $course_offering)
+    public function update(UpdateCourseOfferingRequest $request, CourseOffering $course_offering)
     {
         //
     }
@@ -43,7 +43,7 @@ class CourseOfferingController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Course_offering $course_offering)
+    public function destroy(CourseOffering $course_offering)
     {
         //
     }

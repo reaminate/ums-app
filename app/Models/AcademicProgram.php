@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 #[Fillable(['name', 'code', 'department_id', 'qualification_level', 'duration', 'required_credits', 'status'])]
 #[Hidden('code')]
-class Academic_program extends Model
+class AcademicProgram extends Model
 {
     /** @use HasFactory<\Database\Factories\AcademicProgramFactory> */
     use HasFactory;
@@ -21,6 +21,11 @@ class Academic_program extends Model
     }
     public function courses():BelongsToMany
     {
-        return $this->belongsToMany(Course::class, 'course_program')->using(Course_program::class);
+        return $this->belongsToMany(Course::class, 'course_program')->using(CourseProgram::class);
     }
+    public function students(): HasMany 
+    {
+        return $this->hasMany(Student::class, 'program_id');
+    }
+    
 }

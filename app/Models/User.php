@@ -3,10 +3,12 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\UserType;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -16,7 +18,22 @@ class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
-
+    public function lecturers(): HasMany 
+    {
+        return $this->hasMany(Lecturer::class, 'user_id');
+    }
+    public function students(): HasMany 
+    {
+        return $this->hasMany(Student::class, 'user_id');
+    }
+    public function isAdmin(): bool 
+    {
+        if($this->type != UserType::ADMIN){
+            return false;
+        }
+        return true;
+    }
+    
     /**
      * Get the attributes that should be cast.
      *

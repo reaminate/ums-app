@@ -2,11 +2,11 @@
 
 namespace Database\Factories;
 
-use App\Models\Assignment_mark;
+use App\Models\AssignmentMark;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Assignment_mark>
+ * @extends Factory<AssignmentMark>
  */
 class AssignmentMarkFactory extends Factory
 {

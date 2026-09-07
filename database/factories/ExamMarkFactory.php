@@ -2,11 +2,11 @@
 
 namespace Database\Factories;
 
-use App\Models\Exam_mark;
+use App\Models\ExamMark;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Exam_mark>
+ * @extends Factory<ExamMark>
  */
 class ExamMarkFactory extends Factory
 {
