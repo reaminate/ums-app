@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\AttendanceStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +12,10 @@ class Attendance extends Model
 {
     /** @use HasFactory<\Database\Factories\AttendanceFactory> */
     use HasFactory;
-    public function student(): BelongsTo 
+    protected $casts = [
+        'status' => AttendanceStatus::class,
+    ];
+    public function student(): BelongsTo
     {
         return $this->belongsTo(Student::class, 'student_id');
     }
