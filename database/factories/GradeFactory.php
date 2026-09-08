@@ -18,10 +18,12 @@ class GradeFactory extends Factory
      */
     public function definition(): array
     {
-        $student = Student::findOrFail($this->faker->randomElement(Student::pluck('id')));
+        $student = Student::has('courseOfferings')->inRandomOrder()->firstOrFail();
+        $courseOffering = $student->courseOfferings()->inRandomOrder()->firstOrFail();
+
         return [
             'student_id' => $student->id,
-            'course_offering_id' => $student->courseOfferings,
+            'course_offering_id' => $courseOffering->id,
             'total_assignment_score' => fake()->numberBetween(0,40),
             'total_test_marks' => fake()->numberBetween(0,60),
         ];

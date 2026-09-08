@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('student_id')->constrained('students')->cascadeOnDelete();
             $table->string('file_path');
             $table->string('original_name');
-            $table->enum('mime_type', ['file/pdf', 'file/docx']);
+            $table->enum('mime_type', ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']);
             $table->string('comments')->nullable();
             $table->dateTime('submitted_at');
             $table->enum('status', array_column(SubmissionStatus::cases(), 'value'))->default(SubmissionStatus::ONTIME->value);

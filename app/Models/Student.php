@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 #[Fillable(['user_id', 'student_number', 'name', 'email', 'program_id', 'enrollment_year', 'status'])]
 #[Hidden('user_id')]
 class Student extends Model
@@ -48,10 +49,18 @@ class Student extends Model
     }
     protected static function booted():void
     {
+        // student_number is NOT NULL/unique but its real value is derived from the
+        // auto-incremented id, which doesn't exist yet at insert time. Insert a
+        // unique placeholder first, then overwrite it with the real value once the
+        // id is known.
+        static::creating(function($model){
+            $model->student_number ??= (string) Str::ulid();
+        });
         static::created(function($model){
             $student_id_number =(int) round(((($model->id + 480.57)*160.30987)-26)/56.3);
 
             $model->student_number = "S0.$student_id_number";
+            $model->saveQuietly();
         });
     }
 }

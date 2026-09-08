@@ -22,7 +22,7 @@ class AcademicProgramFactory extends Factory
         //for the name
         $starting = ['Bachelor in', 'Diploma in', 'Masters in', 'Doctorate in'];
         $starting_code = $this->faker->randomElement($starting);
-        $actual_name = fake()->words(2, true);
+        $actual_name = fake()->unique()->words(2, true);
         $name = "$starting_code $actual_name";
         return [
             'name' => $name,

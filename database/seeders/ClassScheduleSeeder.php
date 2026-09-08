@@ -2,7 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\ClassSchedule;
+use Database\Factories\ClassScheduleFactory;
 use Illuminate\Database\Seeder;
 
 class ClassScheduleSeeder extends Seeder
@@ -12,6 +13,8 @@ class ClassScheduleSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        ClassScheduleFactory::resetBookings();
+
+        ClassSchedule::factory(100)->create();
     }
 }

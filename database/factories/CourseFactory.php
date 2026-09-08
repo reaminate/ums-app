@@ -20,7 +20,7 @@ class CourseFactory extends Factory
      */
     public function definition(): array
     {
-        $name = fake()->sentence(3);
+        $name = fake()->unique()->sentence(3);
 
         return [
             'name' => ucwords($name),

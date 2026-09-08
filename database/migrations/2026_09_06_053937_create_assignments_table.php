@@ -21,7 +21,7 @@ return new class extends Migration
             $table->float('max_marks');
             $table->string('file_path');
             $table->string('original_name');
-            $table->enum('mime_type', ['file/pdf', 'file/docx']);
+            $table->enum('mime_type', ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']);
             $table->enum('status', array_column(AssignmentStatus::cases(), 'value'))->default(AssignmentStatus::HIDDEN);
             $table->timestamps();
         });
