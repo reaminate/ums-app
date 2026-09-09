@@ -23,7 +23,8 @@ class UpdateDepartmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['sometimes', 'unique:departments,name', 'string'],
+            'faculty_id' => ['sometimes', 'exists:faculties,id', 'integer', 'max_digits:2']
         ];
     }
 }

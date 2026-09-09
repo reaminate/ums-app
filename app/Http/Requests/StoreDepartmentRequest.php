@@ -12,7 +12,7 @@ class StoreDepartmentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,8 @@ class StoreDepartmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['required', 'unique:departments,name', 'string'],
+            'faculty_id' => ['required', 'exists:faculties,id', 'integer', 'max_digits:2']
         ];
     }
 }
