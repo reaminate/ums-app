@@ -14,6 +14,18 @@ class AttendanceResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'student_id' => $this->student_id,
+            'student_info' => $this->when(
+                $request->user()?->isAdmin(),
+                fn()=>StudentResource::make($this->whenLoaded('student'))
+            ),
+            'class' => $this->whenLoaded(
+                'classSchedule',
+                fn () => $this->classSchedule->courseOffering->course->name,
+            ),
+            'status' => $this->status,
+            'recorded_at' => $this->recorded_at
+        ];
     }
 }

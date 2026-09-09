@@ -14,6 +14,17 @@ class ClassScheduleResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'course_offering_id' => $this->course_offering_id,
+            'course_offering_more_info' => CourseOfferingResource::make($this->whenLoaded('courseOffering')),
+            'day' => $this->day,
+            'room_number' => $this->room_number,
+            'start_time' => $this->start_time,
+            'end_time' => $this->end_time,
+            'attendances' => $this->when(
+                $request->user()?->isAdmin(),
+                fn()=>AttendanceResource::collection($this->whenLoaded('attendances')),
+            ),
+        ];
     }
 }

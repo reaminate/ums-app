@@ -14,6 +14,22 @@ class AssignmentResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'course_name' => $this->whenLoaded(
+                'courseOffering',
+                fn () => $this->courseOffering->course->name,
+            ),
+            'course_more_info' => CourseOfferingResource::make($this->whenLoaded('courseOffering')),
+            'title' => $this->title,
+            'description' => $this->description,
+            'due_date' => $this->due_date,
+            'max_marks' => $this->max_marks,
+            'file_name' => $this->original_name,
+            'status' => $this->status,
+            'assignment_submissions' => $this->when(
+                $request->user()?->isAdmin(),
+                fn()=>AssignmentSubmissionResource::collection($this->whenLoaded('assignmentSubmissions'))
+            ),
+        ];
     }
 }

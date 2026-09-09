@@ -9,26 +9,28 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 #[Fillable(['name', 'type', 'email', 'password', 'is_active'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
-    public function lecturers(): HasMany 
+    use HasFactory, Notifiable, HasApiTokens;
+    public function lecturer(): HasOne 
     {
-        return $this->hasMany(Lecturer::class, 'user_id');
+        return $this->hasOne(Lecturer::class, 'user_id');
     }
-    public function students(): HasMany 
+    public function student(): HasOne 
     {
-        return $this->hasMany(Student::class, 'user_id');
+        return $this->hasOne(Student::class, 'user_id');
     }
-    public function isAdmin(): bool 
+    public function isAdmin(): bool
     {
-        if($this->type != UserType::ADMIN){
+        if($this->type != UserType::ADMIN->value){
             return false;
         }
         return true;

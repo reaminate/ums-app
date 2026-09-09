@@ -17,7 +17,8 @@ class AcademicProgramResource extends JsonResource
         return [
             'name' => $this->name,
             'code' => $this->code,
-            'department_id' => DepartmentResource::make($this->whenLoaded('department')),
+            'department_id' => $this->department_id,
+            'department_more_info' => DepartmentResource::make($this->whenLoaded('department')),
             'qualification_level' => $this->qualification_level,
             'duration' => $this->duration,
             'required_credits' => $this->required_credits,

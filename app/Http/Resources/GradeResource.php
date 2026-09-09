@@ -14,6 +14,19 @@ class GradeResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'student_id' => $this->student_id,
+            'student_info' => $this->when(
+                $request->user()?->isAdmin(),
+                fn()=>StudentResource::make($this->whenLoaded('student'))
+            ),
+            'course_offering_name' => $this->whenLoaded(
+                'courseOffering',
+                fn () => $this->courseOffering->course->name,
+            ),
+            'total_assignment_score' => $this->total_assignment_score,
+            'total_test_marks' => $this->total_test_marks,
+            'grade_score' => $this->grade_score
+        ];
     }
 }

@@ -16,7 +16,8 @@ class DepartmentResource extends JsonResource
     {
         return [
             'name' => $this->name,
-            'faculty_id' => FacultyResource::make($this->whenLoaded('faculty')),
+            'faculty_id' => $this->faculty_id,
+            'faculty_more_info' => FacultyResource::make($this->whenLoaded('faculty')),
             'academic_programs' => AcademicProgramResource::collection($this->whenLoaded('academicPrograms')),
             'courses' => CourseResource::collection($this->whenLoaded('courses')),
             'lecturers' => LecturerResource::collection($this->whenLoaded('lecturers')),

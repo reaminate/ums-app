@@ -14,6 +14,20 @@ class AssignmentMarkResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'assignment' => $this->when(
+                $this->resource->relationLoaded('assignmentSubmission'),
+                fn () => $request->user()?->isAdmin()
+                    ? AssignmentSubmissionResource::make($this->assignmentSubmission)
+                    : $this->assignmentSubmission->assignment->title
+            ),
+            'marks' => $this->marks,
+            'comments' => $this->comments,
+            'marked_at' => $this->marked_at,
+            'lecturer_info' => $this->when(
+                $request->user()?->isAdmin(),
+                fn() => LecturerResource::make($this->whenLoaded('lecturer'))
+            ),
+        ];
     }
 }
