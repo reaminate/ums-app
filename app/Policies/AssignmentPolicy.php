@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\AssignmentStatus;
 use App\Models\Assignment;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -13,7 +14,10 @@ class AssignmentPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        if(!$user->isLecturer()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -21,7 +25,13 @@ class AssignmentPolicy
      */
     public function view(User $user, Assignment $assignment): bool
     {
-        return false;
+        if(!$user->isLecturer()){
+            return false;
+        }
+        if($assignment->status != AssignmentStatus::SHOWN->value){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -29,7 +39,10 @@ class AssignmentPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        if(!$user->isLecturer()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -37,7 +50,10 @@ class AssignmentPolicy
      */
     public function update(User $user, Assignment $assignment): bool
     {
-        return false;
+        if(!$user->isLecturer()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -45,7 +61,10 @@ class AssignmentPolicy
      */
     public function delete(User $user, Assignment $assignment): bool
     {
-        return false;
+        if(!$user->isLecturer()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -53,7 +72,10 @@ class AssignmentPolicy
      */
     public function restore(User $user, Assignment $assignment): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -61,6 +83,9 @@ class AssignmentPolicy
      */
     public function forceDelete(User $user, Assignment $assignment): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 }

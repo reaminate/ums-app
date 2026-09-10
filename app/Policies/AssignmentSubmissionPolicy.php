@@ -13,7 +13,10 @@ class AssignmentSubmissionPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        if(!$user->isLecturer()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -21,7 +24,10 @@ class AssignmentSubmissionPolicy
      */
     public function view(User $user, AssignmentSubmission $assignmentSubmission): bool
     {
-        return false;
+        if($user->student->id != $assignmentSubmission->student_id){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -29,7 +35,7 @@ class AssignmentSubmissionPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -37,7 +43,10 @@ class AssignmentSubmissionPolicy
      */
     public function update(User $user, AssignmentSubmission $assignmentSubmission): bool
     {
-        return false;
+        if($user->student->id != $assignmentSubmission->student_id){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -45,7 +54,10 @@ class AssignmentSubmissionPolicy
      */
     public function delete(User $user, AssignmentSubmission $assignmentSubmission): bool
     {
-        return false;
+        if($user->student->id != $assignmentSubmission->student_id){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -53,7 +65,10 @@ class AssignmentSubmissionPolicy
      */
     public function restore(User $user, AssignmentSubmission $assignmentSubmission): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -61,6 +76,9 @@ class AssignmentSubmissionPolicy
      */
     public function forceDelete(User $user, AssignmentSubmission $assignmentSubmission): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 }

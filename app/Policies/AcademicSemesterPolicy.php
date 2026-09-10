@@ -13,7 +13,7 @@ class AcademicSemesterPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,7 +21,7 @@ class AcademicSemesterPolicy
      */
     public function view(User $user, AcademicSemester $academicSemester): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -29,7 +29,10 @@ class AcademicSemesterPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -37,7 +40,10 @@ class AcademicSemesterPolicy
      */
     public function update(User $user, AcademicSemester $academicSemester): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -45,7 +51,10 @@ class AcademicSemesterPolicy
      */
     public function delete(User $user, AcademicSemester $academicSemester): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -53,7 +62,10 @@ class AcademicSemesterPolicy
      */
     public function restore(User $user, AcademicSemester $academicSemester): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -61,6 +73,9 @@ class AcademicSemesterPolicy
      */
     public function forceDelete(User $user, AcademicSemester $academicSemester): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 }

@@ -13,7 +13,10 @@ class AttendancePolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -21,7 +24,13 @@ class AttendancePolicy
      */
     public function view(User $user, Attendance $attendance): bool
     {
-        return false;
+        if($user->isAdmin()){
+            return true;
+        }
+        if(!$user->lecturer || $user->lecturer->id != $attendance->classSchedule->courseOffering->lecturer_id){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -29,7 +38,10 @@ class AttendancePolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        if(!$user->isLecturer()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -37,7 +49,13 @@ class AttendancePolicy
      */
     public function update(User $user, Attendance $attendance): bool
     {
-        return false;
+        if($user->isAdmin()){
+            return true;
+        }
+        if(!$user->lecturer || $user->lecturer->id != $attendance->classSchedule->courseOffering->lecturer_id){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -45,7 +63,10 @@ class AttendancePolicy
      */
     public function delete(User $user, Attendance $attendance): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -53,7 +74,10 @@ class AttendancePolicy
      */
     public function restore(User $user, Attendance $attendance): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -61,6 +85,9 @@ class AttendancePolicy
      */
     public function forceDelete(User $user, Attendance $attendance): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 }

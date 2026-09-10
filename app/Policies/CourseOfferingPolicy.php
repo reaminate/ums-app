@@ -13,7 +13,7 @@ class CourseOfferingPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,7 +21,7 @@ class CourseOfferingPolicy
      */
     public function view(User $user, CourseOffering $courseOffering): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -29,7 +29,10 @@ class CourseOfferingPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -37,7 +40,10 @@ class CourseOfferingPolicy
      */
     public function update(User $user, CourseOffering $courseOffering): bool
     {
-        return false;
+        if(!$user->isLecturer()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -45,7 +51,10 @@ class CourseOfferingPolicy
      */
     public function delete(User $user, CourseOffering $courseOffering): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -53,7 +62,10 @@ class CourseOfferingPolicy
      */
     public function restore(User $user, CourseOffering $courseOffering): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -61,6 +73,9 @@ class CourseOfferingPolicy
      */
     public function forceDelete(User $user, CourseOffering $courseOffering): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 }

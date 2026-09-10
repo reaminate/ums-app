@@ -13,7 +13,10 @@ class AssignmentMarkPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        if(!$user->isLecturer()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -21,7 +24,13 @@ class AssignmentMarkPolicy
      */
     public function view(User $user, AssignmentMark $assignmentMark): bool
     {
-        return false;
+        if(!$user->isLecturer()){
+            return false;
+        }
+        if($user->id != $assignmentMark->assignmentSubmission->student->id){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -29,7 +38,10 @@ class AssignmentMarkPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        if(!$user->isLecturer()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -37,7 +49,10 @@ class AssignmentMarkPolicy
      */
     public function update(User $user, AssignmentMark $assignmentMark): bool
     {
-        return false;
+        if(!$user->isLecturer()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -45,7 +60,10 @@ class AssignmentMarkPolicy
      */
     public function delete(User $user, AssignmentMark $assignmentMark): bool
     {
-        return false;
+        if(!$user->isLecturer()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -53,7 +71,10 @@ class AssignmentMarkPolicy
      */
     public function restore(User $user, AssignmentMark $assignmentMark): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -61,6 +82,9 @@ class AssignmentMarkPolicy
      */
     public function forceDelete(User $user, AssignmentMark $assignmentMark): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 }

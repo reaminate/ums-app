@@ -13,7 +13,10 @@ class ExamMarkPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;;
     }
 
     /**
@@ -21,7 +24,14 @@ class ExamMarkPolicy
      */
     public function view(User $user, ExamMark $examMark): bool
     {
-        return false;
+        //note change these and everything else. logic is wrong.
+        if($user->isLecturer()){
+            return true;
+        }
+        if($user->id != $examMark->student->id){
+            return false;
+        }
+        return true;;
     }
 
     /**
@@ -29,7 +39,10 @@ class ExamMarkPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;;
     }
 
     /**
@@ -37,7 +50,10 @@ class ExamMarkPolicy
      */
     public function update(User $user, ExamMark $examMark): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;;
     }
 
     /**
@@ -45,7 +61,10 @@ class ExamMarkPolicy
      */
     public function delete(User $user, ExamMark $examMark): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;;
     }
 
     /**
@@ -53,7 +72,10 @@ class ExamMarkPolicy
      */
     public function restore(User $user, ExamMark $examMark): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;;
     }
 
     /**
@@ -61,6 +83,9 @@ class ExamMarkPolicy
      */
     public function forceDelete(User $user, ExamMark $examMark): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;;
     }
 }

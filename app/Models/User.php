@@ -35,6 +35,13 @@ class User extends Authenticatable
         }
         return true;
     }
+    public function isLecturer(): bool
+    {
+        if($this->type == UserType::STUDENT->value){
+            return false;
+        }
+        return true;
+    }
     
     /**
      * Get the attributes that should be cast.
