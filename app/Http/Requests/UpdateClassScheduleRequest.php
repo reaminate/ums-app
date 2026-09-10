@@ -12,7 +12,7 @@ class UpdateClassScheduleRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,9 +24,9 @@ class UpdateClassScheduleRequest extends FormRequest
     {
         return [
             'course_offering_id' => ['integer', 'sometimes', 'exists:course_offerings,id'],
-            'day' => ['sometimes', new Enum(DaysOfTheWeek::cases())],
-            'start_time' => ['sometimes', 'date_format:h:i'],
-            'end_time' => ['sometimes', 'date_format:h:i', 'after:start_time'],
+            'day' => ['sometimes', new Enum(DaysOfTheWeek::class)],
+            'start_time' => ['sometimes', 'date_format:H:i'],
+            'end_time' => ['sometimes', 'date_format:H:i', 'after:start_time'],
             'room_number' => ['sometimes', 'string']
         ];
     }

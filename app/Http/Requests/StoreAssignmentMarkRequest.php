@@ -12,7 +12,7 @@ class StoreAssignmentMarkRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,11 @@ class StoreAssignmentMarkRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'assignment_submission_id' => ['required', 'exists:assignment_submissions,id', 'integer'],
+            'marks' => ['required', 'numeric', 'decimal:0,2'],
+            'comments' => ['required', 'string', 'max:200'],
+            'marked_at' => ['required', 'date', 'date_format:Y-m-d'],
+            'lecturer_id' => ['required', 'exists:lecturers,id', 'integer'],
         ];
     }
 }

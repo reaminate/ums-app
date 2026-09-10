@@ -2,12 +2,13 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\LecturerStatus;
+use App\Enums\UserType;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\Rules\Password;
 
-class StoreLecturerRequest extends FormRequest
+class StoreUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,11 +26,11 @@ class StoreLecturerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => ['integer', 'exists:users,id', 'required'],
-            'name' => ['string', 'required'],
-            'email' => ['email', 'required'],
-            'department_id' => ['required', 'exists:departments,id', 'integer'],
-            'status' => ['required', new Enum(LecturerStatus::class)],
+            'name' => ['required', 'string'],
+            'type' => ['required', new Enum(UserType::class)],
+            'email' => ['required', 'email', 'unique:users,email'],
+            'password' => ['required', Password::min(7)],
+            'is_active' => ['required', 'boolean'],
         ];
     }
 }

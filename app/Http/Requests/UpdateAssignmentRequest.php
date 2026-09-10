@@ -23,13 +23,13 @@ class UpdateAssignmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'course_offering_id' => ['required', 'exists:course_offerings,id'],
-            'title' => ['required', 'string'],
+            'course_offering_id' => ['sometimes', 'exists:course_offerings,id'],
+            'title' => ['sometimes', 'string'],
             'description' => ['nullable', 'string'],
-            'due_date' => ['required', 'date_format:y-m-d', 'date'],
-            'max_marks' => ['required', 'numeric', 'decimal:0,2'],
-            'file' => ['required', 'file', 'mimes:application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'max:5120'],
-            'status' => ['required', new Enum(AssignmentStatus::cases())],
+            'due_date' => ['sometimes', 'date_format:Y-m-d', 'date'],
+            'max_marks' => ['sometimes', 'numeric', 'decimal:0,2'],
+            'file' => ['sometimes', 'file', 'mimes:pdf,docx', 'max:5120'],
+            'status' => ['sometimes', new Enum(AssignmentStatus::class)],
         ];
     }
 }

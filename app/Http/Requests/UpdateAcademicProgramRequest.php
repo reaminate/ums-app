@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 use App\Enums\AcademicStatus;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 class UpdateAcademicProgramRequest extends FormRequest
 {
@@ -23,13 +24,12 @@ class UpdateAcademicProgramRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['sometimes', 'string', 'unique:academic_programs,name', 'starts_with:diploma,degree,masters,phd,doctrate'],
-            'code' => ['sometimes', 'string', 'unique:academic_programs,code'],
+            'name' => ['sometimes', 'string', Rule::unique('academic_programs', 'name')->ignore($this->route('academic_program')), 'starts_with:diploma,degree,masters,phd,doctorate'],
             'department_id' => ['sometimes', 'exists:departments,id', 'integer', 'max_digits:2'],
             'qualification_level' => ['sometimes', 'integer', 'max_digits:2', 'min:0'],
             'duration' => ['sometimes', 'integer', 'min:1', 'max_digits:1'],
             'required_credits' => ['sometimes', 'integer', 'min:1000', 'min_digits:4', 'max_digits:6'],
-            'status' => ['sometimes', new Enum(AcademicStatus::cases())]
+            'status' => ['sometimes', new Enum(AcademicStatus::class)]
             
         ];
     }

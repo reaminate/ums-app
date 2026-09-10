@@ -25,10 +25,10 @@ class StoreAttendanceRequest extends FormRequest
     {
         return [
             'student_id' => ['required', 'exists:students,id'],
-            'class_schedule_id' => ['required', 'exists:class_schedules,id', Rule::unique('attendances', 'class_student_id')->where('student_id', $this->input('student_id'))],
-            'total_classes' => ['required', 'integer', 'max:1'],
-            'attendance_value' => ['required', 'integer', 'max:1'],
-            'recorded_at' => ['required', 'date_format:h:m']
+            'class_schedule_id' => ['required', 'exists:class_schedules,id', Rule::unique('attendances', 'class_schedule_id')->where('student_id', $this->input('student_id'))],
+            'total_classes' => ['required', 'integer', 'min:0'],
+            'attendance_value' => ['required', 'numeric', 'decimal:0,2'],
+            'recorded_at' => ['required', 'date_format:H:i']
         ];
     }
 }

@@ -27,11 +27,11 @@ class StoreAcademicSemesterRequest extends FormRequest
         return [
             'name' => ['required','string', 'starts_with:Semester'],
             'year' => ['required','integer', 'digits:4'],
-            'start_date'=>['required','date', 'date_format:y-m-d'],
-            'end_date' => ['required','date', 'date_format:y-m-d', 'after:start_date'],
-            'registration_start_date' => ['required', 'date', 'date_format:y-m-d', 'before:start_date'],
-            'registration_end_date' => ['required', 'date', 'date_format:y-m-d', 'after:registration_start_date', 'before:start_date'],
-            'status' => ['required', new Enum(SemesterStatus::cases())]
+            'start_date'=>['required','date', 'date_format:Y-m-d'],
+            'end_date' => ['required','date', 'date_format:Y-m-d', 'after:start_date'],
+            'registration_start_date' => ['required', 'date', 'date_format:Y-m-d', 'before:start_date'],
+            'registration_end_date' => ['required', 'date', 'date_format:Y-m-d', 'after:registration_start_date', 'before:start_date'],
+            'status' => ['required', new Enum(SemesterStatus::class)]
         ];
     }
 }

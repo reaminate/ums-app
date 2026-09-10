@@ -24,12 +24,12 @@ class UpdateCourseOfferingRequest extends FormRequest
     {
         return [
             'course_id'=> ['sometimes', 'integer', 'exists:courses,id'],
-            'semester_id' => ['sometimes', 'integer', 'exists:semesters,id'],
+            'semester_id' => ['sometimes', 'integer', 'exists:academic_semesters,id'],
             'lecturer_id' => ['sometimes', 'integer', 'exists:lecturers,id'],
             'max_students' => ['sometimes', 'integer', 'min:20', 'max:50'],
-            'status' => ['sometimes', new Enum(CourseOfferingStatus::cases())],
-            'start_date' => ['date', 'sometimes', 'date_format:y-m-d'],
-            'end_date' => ['date', 'sometimes', 'date_format:y-m-d', 'after:start_date'],
+            'status' => ['sometimes', new Enum(CourseOfferingStatus::class)],
+            'start_date' => ['date', 'sometimes', 'date_format:Y-m-d'],
+            'end_date' => ['date', 'sometimes', 'date_format:Y-m-d', 'after:start_date'],
         ];
     }
 }

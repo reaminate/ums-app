@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateDepartmentRequest extends FormRequest
 {
@@ -12,7 +13,7 @@ class UpdateDepartmentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +24,7 @@ class UpdateDepartmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['sometimes', 'unique:departments,name', 'string'],
+            'name' => ['sometimes', 'string', Rule::unique('departments', 'name')->ignore($this->route('department'))],
             'faculty_id' => ['sometimes', 'exists:faculties,id', 'integer', 'max_digits:2']
         ];
     }

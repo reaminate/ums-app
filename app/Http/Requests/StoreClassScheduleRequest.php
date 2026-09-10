@@ -26,9 +26,9 @@ class StoreClassScheduleRequest extends FormRequest
     {
         return [
             'course_offering_id' => ['integer', 'required', 'exists:course_offerings,id'],
-            'day' => ['required', new Enum(DaysOfTheWeek::cases())],
-            'start_time' => ['required', 'date_format:h:i'],
-            'end_time' => ['required', 'date_format:h:i', 'after:start_time'],
+            'day' => ['required', new Enum(DaysOfTheWeek::class)],
+            'start_time' => ['required', 'date_format:H:i'],
+            'end_time' => ['required', 'date_format:H:i', 'after:start_time'],
             'room_number' => ['required', 'string']
         ];
     }

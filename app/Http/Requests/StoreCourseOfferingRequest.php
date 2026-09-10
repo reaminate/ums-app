@@ -26,12 +26,12 @@ class StoreCourseOfferingRequest extends FormRequest
     {
         return [
             'course_id'=> ['required', 'integer', 'exists:courses,id'],
-            'semester_id' => ['required', 'integer', 'exists:semesters,id'],
+            'semester_id' => ['required', 'integer', 'exists:academic_semesters,id'],
             'lecturer_id' => ['required', 'integer', 'exists:lecturers,id'],
             'max_students' => ['required', 'integer', 'min:20', 'max:50'],
-            'status' => ['required', new Enum(CourseOfferingStatus::cases())],
-            'start_date' => ['date', 'required', 'date_format:y-m-d'],
-            'end_date' => ['date', 'required', 'date_format:y-m-d', 'after:start_date'],
+            'status' => ['required', new Enum(CourseOfferingStatus::class)],
+            'start_date' => ['date', 'required', 'date_format:Y-m-d'],
+            'end_date' => ['date', 'required', 'date_format:Y-m-d', 'after:start_date'],
         ];
     }
 }

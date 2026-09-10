@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 use App\Enums\CourseStatus;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 class UpdateCourseRequest extends FormRequest
 {
@@ -23,13 +24,12 @@ class UpdateCourseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['sometimes', 'string', 'unique:courses,name'],
-            'code' => ['sometimes', 'string', 'unique:courses,code'],
-            'description' => ['string'],
+            'name' => ['sometimes', 'string', Rule::unique('courses', 'name')->ignore($this->route('course'))],
+            'description' => ['sometimes', 'string'],
             'department_id' => ['sometimes', 'exists:departments,id', 'integer'],
             'credit_value' => ['sometimes', 'integer', 'min_digits:3', 'max_digits:4','min:100'],
             'course_level' =>['sometimes', 'integer', 'max_digits:1', 'min_digits:0', 'min:1'],
-            'status' => ['sometimes', new Enum(CourseStatus::cases())],
+            'status' => ['sometimes', new Enum(CourseStatus::class)],
         ];
     }
 }

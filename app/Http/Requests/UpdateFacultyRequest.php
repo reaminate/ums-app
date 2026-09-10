@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateFacultyRequest extends FormRequest
 {
@@ -23,7 +24,7 @@ class UpdateFacultyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'unique:faculties,name'],
+            'name' => ['required', Rule::unique('faculties', 'name')->ignore($this->route('faculty'))],
         ];
     }
 }

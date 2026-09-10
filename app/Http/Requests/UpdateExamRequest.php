@@ -12,7 +12,7 @@ class UpdateExamRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,11 @@ class UpdateExamRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'course_offering_id' => ['sometimes', 'exists:course_offerings,id', 'integer'],
+            'exam_type' => ['sometimes', 'string'],
+            'exam_date' => ['sometimes', 'date', 'date_format:Y-m-d'],
+            'max_marks' => ['sometimes', 'numeric', 'decimal:0,2', 'min:0'],
+            'weight' => ['sometimes', 'integer', 'between:0,100'],
         ];
     }
 }

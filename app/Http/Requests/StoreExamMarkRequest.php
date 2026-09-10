@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreExamMarkRequest extends FormRequest
 {
@@ -12,7 +13,7 @@ class StoreExamMarkRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +24,9 @@ class StoreExamMarkRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'exam_id' => ['required', 'exists:exams,id', 'integer', Rule::unique('exam_marks', 'exam_id')->where('student_id', $this->input('student_id'))],
+            'student_id' => ['required', 'exists:students,id', 'integer'],
+            'marks' => ['required', 'numeric', 'decimal:0,2', 'min:0'],
         ];
     }
 }

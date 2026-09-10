@@ -27,7 +27,7 @@ class UpdateLecturerRequest extends FormRequest
             'name' => ['string', 'sometimes'],
             'email' => ['email', 'sometimes'],
             'department_id' => ['sometimes', 'exists:departments,id', 'integer'],
-            'status' => ['sometimes', new Enum(LecturerStatus::cases())],
+            'status' => ['sometimes', new Enum(LecturerStatus::class)],
         ];
     }
 }
