@@ -12,7 +12,7 @@ class StoreGradeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,10 @@ class StoreGradeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'student_id' => ['required', 'exists:students,id', 'integer'],
+            'course_offering_id' => ['required', 'exists:course_offerings,id'],
+            'total_assignment_score' => ['required', 'decimal:2'],
+            'total_test_marks' => ['required', 'decimal:2'],
         ];
     }
 }

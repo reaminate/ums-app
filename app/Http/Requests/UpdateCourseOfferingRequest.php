@@ -1,10 +1,10 @@
 <?php
 
 namespace App\Http\Requests;
-
+use App\Enums\CourseOfferingStatus;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-
+use Illuminate\Validation\Rules\Enum;
 class UpdateCourseOfferingRequest extends FormRequest
 {
     /**
@@ -12,7 +12,7 @@ class UpdateCourseOfferingRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,13 @@ class UpdateCourseOfferingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'course_id'=> ['sometimes', 'integer', 'exists:courses,id'],
+            'semester_id' => ['sometimes', 'integer', 'exists:semesters,id'],
+            'lecturer_id' => ['sometimes', 'integer', 'exists:lecturers,id'],
+            'max_students' => ['sometimes', 'integer', 'min:20', 'max:50'],
+            'status' => ['sometimes', new Enum(CourseOfferingStatus::cases())],
+            'start_date' => ['date', 'sometimes', 'date_format:y-m-d'],
+            'end_date' => ['date', 'sometimes', 'date_format:y-m-d', 'after:start_date'],
         ];
     }
 }

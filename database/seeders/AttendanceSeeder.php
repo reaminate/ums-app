@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Enums\AttendanceStatus;
 use App\Models\Attendance;
 use App\Models\ClassSchedule;
 use Illuminate\Database\Seeder;

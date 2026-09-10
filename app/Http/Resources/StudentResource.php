@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Enums\AttendanceStatus;
 use App\Enums\SemesterStatus;
 use App\Models\AcademicSemester;
 use Illuminate\Http\Request;
@@ -42,23 +41,10 @@ class StudentResource extends JsonResource
                 }
 
                 return $attendances
-                    ->groupBy(fn ($attendance) => $attendance->classSchedule->course_offering_id)
-                    ->map(function ($attendances) {
-                        $courseOffering = $attendances->first()->classSchedule->courseOffering;
-                        $totalSessions = $attendances->count();
-                        $attendanceScore = $attendances->sum(fn ($attendance) => $attendance->status->weight());
-
-                        return [
-                            'course_name' => $courseOffering->course->name,
-                            'present' => $attendances->where('status', AttendanceStatus::PRESENT)->count(),
-                            'absent' => $attendances->where('status', AttendanceStatus::ABSENT)->count(),
-                            'late' => $attendances->where('status', AttendanceStatus::LATE)->count(),
-                            'excused' => $attendances->where('status', AttendanceStatus::EXCUSED)->count(),
-                            'attendance_percentage' => $totalSessions > 0
-                                ? round($attendanceScore / $totalSessions * 100, 1)
-                                : 0.0,
-                        ];
-                    })
+                    ->map(fn ($attendance) => [
+                        'course_name' => $attendance->classSchedule->courseOffering->course->name,
+                        'status' => $attendance->status,
+                    ])
                     ->values();
             }),
         ];

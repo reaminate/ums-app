@@ -16,7 +16,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('student_id')->constrained('students')->cascadeOnDelete();
             $table->foreignId('class_schedule_id')->constrained('class_schedules')->cascadeOnDelete();
-            $table->enum('status', array_column(AttendanceStatus::cases(), 'value'))->default(AttendanceStatus::PRESENT->value);
+            $table->integer('total_classes')->default(0);
+            $table->float('attendance_value')->default(0.0);
+            $table->enum('status', array_column(AttendanceStatus::cases(), 'value'))->default(AttendanceStatus::NOTVIABLE->value);
             $table->time('recorded_at');
             $table->timestamps();
         });

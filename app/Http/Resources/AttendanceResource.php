@@ -24,6 +24,7 @@ class AttendanceResource extends JsonResource
                 'classSchedule',
                 fn () => $this->classSchedule->courseOffering->course->name,
             ),
+            'attendance_value' => $this->attendance_value,
             'status' => $this->status,
             'recorded_at' => $this->recorded_at
         ];

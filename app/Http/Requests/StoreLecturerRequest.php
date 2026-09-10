@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\LecturerStatus;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class StoreLecturerRequest extends FormRequest
 {
@@ -12,7 +14,7 @@ class StoreLecturerRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +25,11 @@ class StoreLecturerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'user_id' => ['integer', 'exists:users,id', 'required'],
+            'name' => ['string', 'required'],
+            'email' => ['email', 'required'],
+            'department_id' => ['required', 'exists:departments,id', 'integer'],
+            'status' => ['required', new Enum(LecturerStatus::cases())],
         ];
     }
 }

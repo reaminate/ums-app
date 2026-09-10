@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreAttendanceRequest extends FormRequest
 {
@@ -12,7 +13,7 @@ class StoreAttendanceRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +24,11 @@ class StoreAttendanceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'student_id' => ['required', 'exists:students,id'],
+            'class_schedule_id' => ['required', 'exists:class_schedules,id', Rule::unique('attendances', 'class_student_id')->where('student_id', $this->input('student_id'))],
+            'total_classes' => ['required', 'integer', 'max:1'],
+            'attendance_value' => ['required', 'integer', 'max:1'],
+            'recorded_at' => ['required', 'date_format:h:m']
         ];
     }
 }

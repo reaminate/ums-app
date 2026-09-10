@@ -12,7 +12,7 @@ class UpdateGradeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,10 @@ class UpdateGradeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'student_id' => ['sometimes', 'exists:students,id', 'integer'],
+            'course_offering_id' => ['sometimes', 'exists:course_offerings,id'],
+            'total_assignment_score' => ['sometimes', 'decimal:2'],
+            'total_test_marks' => ['sometimes', 'decimal:2'],
         ];
     }
 }
