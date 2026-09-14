@@ -13,6 +13,9 @@ class ExamPolicy
      */
     public function viewAny(User $user): bool
     {
+        if($user->isAdmin()){
+            return true;
+        }
         return false;
     }
 
@@ -21,7 +24,19 @@ class ExamPolicy
      */
     public function view(User $user, Exam $exam): bool
     {
-        return false;
+        if($user->isAdmin()){
+            return true;
+        }
+        $isStudent = $exam->courseOffering->students()
+            ->where('user_id', $user->id)
+            ->exists();
+        $isLecturer = $exam->courseOffering->lecturer()
+            ->where('user_id', $user->id)
+            ->exists();
+        if(!$isStudent && !$isLecturer){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -29,7 +44,10 @@ class ExamPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        if(!$user->isLecturer()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -37,7 +55,10 @@ class ExamPolicy
      */
     public function update(User $user, Exam $exam): bool
     {
-        return false;
+        if(!$user->isLecturer()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -45,7 +66,10 @@ class ExamPolicy
      */
     public function delete(User $user, Exam $exam): bool
     {
-        return false;
+        if(!$user->isLecturer()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -53,7 +77,10 @@ class ExamPolicy
      */
     public function restore(User $user, Exam $exam): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -61,6 +88,9 @@ class ExamPolicy
      */
     public function forceDelete(User $user, Exam $exam): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 }

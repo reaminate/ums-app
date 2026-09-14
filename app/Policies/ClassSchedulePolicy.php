@@ -14,7 +14,7 @@ class ClassSchedulePolicy
      */
     public function viewAny(User $user): bool
     {
-        if(!$user->isLecturer()){
+        if(!$user->isAdmin()){
             return false;
         }
         return true;
@@ -26,22 +26,29 @@ class ClassSchedulePolicy
     public function view(User $user, ClassSchedule $classSchedule): bool
     {
         //only allow if your admin, or if its a class you teach as lecturer or if its a class you attend as a student
-        if($user->isAdmin()){
-            return true;
-        }
-        if($user->type == UserType::LECTURER->value){
-            if($user->id != $classSchedule->courseOffering->lecturer->id){
-                return false;
-            }
-            return true;
-        }
-        $attends = $classSchedule->attendances()
-            ->whereHas('student', fn($query) => $query->where('user_id', $user->id))
+        // if($user->isAdmin()){
+        //     return true;
+        // }
+        // if($user->type == UserType::LECTURER->value){
+        //     if($user->id != $classSchedule->courseOffering->lecturer->user_id){
+        //         return false;
+        //     }
+        //     return true;
+        // }
+        $lecturer = $classSchedule->courseOffering()
+            ->whereHas('lecturer', function($query) use($user){
+                $query->where('user_id', $user->id);
+            })
             ->exists();
-        if(!$attends){
-            return false;
+        $attends = $classSchedule->courseOffering()
+            ->whereHas('students', function($query) use($user){
+                $query->where('user_id', $user->id);
+            })
+            ->exists();
+        if($user->isAdmin()||$lecturer||$attends){
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**

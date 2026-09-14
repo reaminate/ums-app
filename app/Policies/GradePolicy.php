@@ -13,7 +13,10 @@ class GradePolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        if(!$user->isLecturer()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -21,6 +24,18 @@ class GradePolicy
      */
     public function view(User $user, Grade $grade): bool
     {
+        // if($user->isLecturer()){
+        //     return true;
+        // }
+        // if($user->id != $grade->student_id){
+        //     return false;
+        // }
+        $studentCan = $grade->student()
+        ->where('user_id', $user->id)
+        ->exists();
+        if($user->isLecturer() || $studentCan){
+            return true;
+        }
         return false;
     }
 
@@ -29,7 +44,10 @@ class GradePolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        if(!$user->isLecturer()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -37,7 +55,10 @@ class GradePolicy
      */
     public function update(User $user, Grade $grade): bool
     {
-        return false;
+        if(!$user->isLecturer()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -45,7 +66,10 @@ class GradePolicy
      */
     public function delete(User $user, Grade $grade): bool
     {
-        return false;
+        if(!$user->isLecturer()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -53,7 +77,10 @@ class GradePolicy
      */
     public function restore(User $user, Grade $grade): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -61,6 +88,9 @@ class GradePolicy
      */
     public function forceDelete(User $user, Grade $grade): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 }

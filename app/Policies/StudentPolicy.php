@@ -13,7 +13,10 @@ class StudentPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -21,6 +24,12 @@ class StudentPolicy
      */
     public function view(User $user, Student $student): bool
     {
+        $studentCan  = $student
+        ->where('user_id', $user->id)
+        ->exists();
+        if($user->isAdmin()||$studentCan){
+            return true;
+        }
         return false;
     }
 
@@ -29,7 +38,10 @@ class StudentPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -37,6 +49,12 @@ class StudentPolicy
      */
     public function update(User $user, Student $student): bool
     {
+        $studentCan  = $student
+        ->where('user_id', $user->id)
+        ->exists();
+        if($user->isAdmin()||$studentCan){
+            return true;
+        }
         return false;
     }
 
@@ -45,7 +63,10 @@ class StudentPolicy
      */
     public function delete(User $user, Student $student): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -53,7 +74,10 @@ class StudentPolicy
      */
     public function restore(User $user, Student $student): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -61,6 +85,9 @@ class StudentPolicy
      */
     public function forceDelete(User $user, Student $student): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 }

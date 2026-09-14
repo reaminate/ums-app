@@ -24,13 +24,15 @@ class AssignmentMarkPolicy
      */
     public function view(User $user, AssignmentMark $assignmentMark): bool
     {
-        if(!$user->isLecturer()){
-            return false;
+        $studentMark = $assignmentMark->assignmentSubmission()
+            ->whereHas('student', function($query) use ($user){
+                $query->where('user_id', $user->id);
+            })
+            ->exists();
+        if($studentMark || $user->isLecturer()){
+            return true;
         }
-        if($user->id != $assignmentMark->assignmentSubmission->student->id){
-            return false;
-        }
-        return true;
+        return false;
     }
 
     /**
@@ -49,7 +51,11 @@ class AssignmentMarkPolicy
      */
     public function update(User $user, AssignmentMark $assignmentMark): bool
     {
-        if(!$user->isLecturer()){
+        $lecturerAssignment = $assignmentMark->assignmentSubmission()
+            ->whereHas('assignment.courseOffering.lecturer', function($query) use($user){
+                $query->where('user_id', $user->id);
+            })->exists();
+        if(!$lecturerAssignment){
             return false;
         }
         return true;
@@ -60,7 +66,11 @@ class AssignmentMarkPolicy
      */
     public function delete(User $user, AssignmentMark $assignmentMark): bool
     {
-        if(!$user->isLecturer()){
+        $lecturerAssignment = $assignmentMark->assignmentSubmission()
+            ->whereHas('assignment.courseOffering.lecturer', function($query) use($user){
+                $query->where('user_id', $user->id);
+            })->exists();
+        if(!$lecturerAssignment){
             return false;
         }
         return true;

@@ -24,13 +24,26 @@ class AttendancePolicy
      */
     public function view(User $user, Attendance $attendance): bool
     {
-        if($user->isAdmin()){
+        // if($user->isAdmin()){
+        //     return true;
+        // }
+        // if(!$user->isLecturer() || $user->lecturer->id != $attendance->classSchedule->courseOffering->lecturer_id){
+        //     return false;
+        // }
+        $lecturerCan = $attendance->classSchedule()
+        ->whereHas('courseOffering.lecturer', function($query) use($user){
+            $query->where('user_id', $user->id);
+        })
+        ->exists();
+        $studentCan = $attendance->classSchedule()
+        ->whereHas('courseOffering.students', function($query) use($user){
+            $query->where('user_id', $user->id);
+        })
+        ->exists();
+        if($user->isAdmin() || $lecturerCan || $studentCan){
             return true;
         }
-        if(!$user->lecturer || $user->lecturer->id != $attendance->classSchedule->courseOffering->lecturer_id){
-            return false;
-        }
-        return true;
+        return false;
     }
 
     /**
@@ -49,13 +62,15 @@ class AttendancePolicy
      */
     public function update(User $user, Attendance $attendance): bool
     {
-        if($user->isAdmin()){
+        $lecturerCan = $attendance->classSchedule()
+        ->whereHas('courseOffering.lecturer', function($query) use($user){
+            $query->where('user_id', $user->id);
+        })
+        ->exists();
+        if($user->isAdmin()||$lecturerCan ){
             return true;
         }
-        if(!$user->lecturer || $user->lecturer->id != $attendance->classSchedule->courseOffering->lecturer_id){
-            return false;
-        }
-        return true;
+        return false;
     }
 
     /**
@@ -63,10 +78,15 @@ class AttendancePolicy
      */
     public function delete(User $user, Attendance $attendance): bool
     {
-        if(!$user->isAdmin()){
-            return false;
+        $lecturerCan = $attendance->classSchedule()
+        ->whereHas('courseOffering.lecturer', function($query) use($user){
+            $query->where('user_id', $user->id);
+        })
+        ->exists();
+        if($user->isAdmin()||$lecturerCan ){
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**

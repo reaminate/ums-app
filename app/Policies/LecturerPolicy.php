@@ -13,7 +13,10 @@ class LecturerPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -21,6 +24,18 @@ class LecturerPolicy
      */
     public function view(User $user, Lecturer $lecturer): bool
     {
+        // if($user->isAdmin()){
+        //     return true;
+        // }
+        // if($user->id != $lecturer->user_id){
+        //     return false;
+        // }
+        $lecturerCan  = $lecturer
+        ->where('user_id', $user->id)
+        ->exists();
+        if($user->isAdmin()||$lecturerCan){
+            return true;
+        }
         return false;
     }
 
@@ -29,7 +44,10 @@ class LecturerPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -37,6 +55,12 @@ class LecturerPolicy
      */
     public function update(User $user, Lecturer $lecturer): bool
     {
+        $lecturerCan  = $lecturer
+        ->where('user_id', $user->id)
+        ->exists();
+        if($user->isAdmin()||$lecturerCan){
+            return true;
+        }
         return false;
     }
 
@@ -45,7 +69,10 @@ class LecturerPolicy
      */
     public function delete(User $user, Lecturer $lecturer): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -53,7 +80,10 @@ class LecturerPolicy
      */
     public function restore(User $user, Lecturer $lecturer): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -61,6 +91,9 @@ class LecturerPolicy
      */
     public function forceDelete(User $user, Lecturer $lecturer): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 }

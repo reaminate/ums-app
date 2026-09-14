@@ -24,10 +24,16 @@ class AssignmentSubmissionPolicy
      */
     public function view(User $user, AssignmentSubmission $assignmentSubmission): bool
     {
-        if($user->student->id != $assignmentSubmission->student_id){
-            return false;
+        // if(!(($user->student?->id === $assignmentSubmission->student_id)||($user->isLecturer()))){
+        //     return false;
+        // }
+        $studentCan = $assignmentSubmission->student()
+        ->where('user_id', $user->id)
+        ->exists();
+        if($studentCan || $user->isLecturer()){
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**
@@ -43,10 +49,13 @@ class AssignmentSubmissionPolicy
      */
     public function update(User $user, AssignmentSubmission $assignmentSubmission): bool
     {
-        if($user->student->id != $assignmentSubmission->student_id){
-            return false;
+        $studentCan = $assignmentSubmission->student()
+        ->where('user_id', $user->id)
+        ->exists();
+        if($studentCan || $user->isLecturer()){
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**
@@ -54,10 +63,13 @@ class AssignmentSubmissionPolicy
      */
     public function delete(User $user, AssignmentSubmission $assignmentSubmission): bool
     {
-        if($user->student->id != $assignmentSubmission->student_id){
-            return false;
+        $studentCan = $assignmentSubmission->student()
+        ->where('user_id', $user->id)
+        ->exists();
+        if($studentCan || $user->isLecturer()){
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**

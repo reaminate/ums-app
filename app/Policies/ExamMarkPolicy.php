@@ -24,14 +24,19 @@ class ExamMarkPolicy
      */
     public function view(User $user, ExamMark $examMark): bool
     {
-        //note change these and everything else. logic is wrong.
-        if($user->isLecturer()){
+        // if($user->isLecturer()){
+        //     return true;
+        // }
+        // if($user->id != $examMark->student->user_id){
+        //     return false;
+        // }
+        $studentsMark = $examMark->student()
+        ->where('user_id', $user->id)
+        ->exists();
+        if($user->isLecturer() || $studentsMark){
             return true;
         }
-        if($user->id != $examMark->student->id){
-            return false;
-        }
-        return true;;
+        return false;
     }
 
     /**
@@ -39,7 +44,7 @@ class ExamMarkPolicy
      */
     public function create(User $user): bool
     {
-        if(!$user->isAdmin()){
+        if(!$user->isLecturer()){
             return false;
         }
         return true;;
@@ -50,7 +55,7 @@ class ExamMarkPolicy
      */
     public function update(User $user, ExamMark $examMark): bool
     {
-        if(!$user->isAdmin()){
+        if(!$user->isLecturer()){
             return false;
         }
         return true;;

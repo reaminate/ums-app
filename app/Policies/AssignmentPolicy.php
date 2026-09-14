@@ -25,13 +25,16 @@ class AssignmentPolicy
      */
     public function view(User $user, Assignment $assignment): bool
     {
-        if(!$user->isLecturer()){
-            return false;
+        // if(($assignment->status != AssignmentStatus::SHOWN->value)||!($user->isLecturer())){
+        //     return false;
+        // }
+        $forStudent = $assignment
+        ->where('status', AssignmentStatus::SHOWN)
+        ->exists();
+        if($forStudent || $user->isLecturer()){
+            return true;
         }
-        if($assignment->status != AssignmentStatus::SHOWN->value){
-            return false;
-        }
-        return true;
+        return false;
     }
 
     /**
@@ -50,7 +53,10 @@ class AssignmentPolicy
      */
     public function update(User $user, Assignment $assignment): bool
     {
-        if(!$user->isLecturer()){
+        $lecturerCan = $assignment->courseOffering()
+            ->where('lecturer_id', $user->id)
+            ->exists();
+        if(!$lecturerCan){
             return false;
         }
         return true;
@@ -61,7 +67,10 @@ class AssignmentPolicy
      */
     public function delete(User $user, Assignment $assignment): bool
     {
-        if(!$user->isLecturer()){
+        $lecturerCan = $assignment->courseOffering()
+            ->where('lecturer_id', $user->id)
+            ->exists();
+        if(!$lecturerCan){
             return false;
         }
         return true;

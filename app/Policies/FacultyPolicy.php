@@ -13,7 +13,10 @@ class FacultyPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -21,7 +24,10 @@ class FacultyPolicy
      */
     public function view(User $user, Faculty $faculty): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -29,7 +35,10 @@ class FacultyPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -37,7 +46,10 @@ class FacultyPolicy
      */
     public function update(User $user, Faculty $faculty): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -45,7 +57,10 @@ class FacultyPolicy
      */
     public function delete(User $user, Faculty $faculty): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -53,7 +68,10 @@ class FacultyPolicy
      */
     public function restore(User $user, Faculty $faculty): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -61,6 +79,9 @@ class FacultyPolicy
      */
     public function forceDelete(User $user, Faculty $faculty): bool
     {
-        return false;
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
     }
 }
