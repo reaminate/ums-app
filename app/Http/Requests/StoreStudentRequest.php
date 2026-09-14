@@ -26,11 +26,7 @@ class StoreStudentRequest extends FormRequest
     {
         return [
             'user_id' => ['required', 'exists:users,id', 'integer', 'unique:students,user_id'],
-            'name' => ['required', 'string'],
-            'email' => ['required', 'email'],
             'program_id' => ['required', 'exists:academic_programs,id'],
-            'enrollment_year' => ['required', 'integer', 'digits:4'],
-            'status' => ['required', new Enum(StudentStatus::class)],
         ];
     }
 }

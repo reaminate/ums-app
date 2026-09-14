@@ -26,10 +26,7 @@ class StoreLecturerRequest extends FormRequest
     {
         return [
             'user_id' => ['integer', 'exists:users,id', 'required'],
-            'name' => ['string', 'required'],
-            'email' => ['email', 'required'],
             'department_id' => ['required', 'exists:departments,id', 'integer'],
-            'status' => ['required', new Enum(LecturerStatus::class)],
         ];
     }
 }

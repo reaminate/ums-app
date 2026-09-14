@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\LecturerStatus;
 use App\Http\Resources\LecturerResource;
 use App\Models\Lecturer;
 use App\Http\Requests\StoreLecturerRequest;
 use App\Http\Requests\UpdateLecturerRequest;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class LecturerController extends Controller
@@ -42,6 +44,13 @@ class LecturerController extends Controller
     {
         if($request->user()->cannot('create', Lecturer::class)){
             abort(403);
+        }
+        $validated = $request->validated();
+        $user = User::findOrFail($validated['user_id']);
+        if(isset($user)){
+            $validated['name'] = $user->name;
+            $validated['email'] = $user->email;
+            $validated['status'] = LecturerStatus::AVAILABLE->value;
         }
         Lecturer::create($request->validated());
         return response('', 201);

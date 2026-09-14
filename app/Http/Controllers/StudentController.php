@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\StudentStatus;
+use App\Enums\UserType;
 use App\Http\Resources\StudentResource;
 use App\Models\Student;
 use App\Http\Requests\StoreStudentRequest;
 use App\Http\Requests\UpdateStudentRequest;
+use App\Models\User;
+use App\Notifications\StudentCreated;
 use Illuminate\Http\Request;
+use function Symfony\Component\Clock\now;
 
 class StudentController extends Controller
 {
@@ -52,7 +57,16 @@ class StudentController extends Controller
         if($request->user()->cannot('create', Student::class)){
             abort(403);
         }
-        Student::create($request->validated());
+        $validated = $request->validated();
+        $user = User::findOrFail($validated['user_id']);
+        if(isset($user)){
+            $validated['name'] = $user->name;
+            $validated['email'] = $user->email;
+            $validated['enrollment_year'] = now();
+            $validated['status'] = StudentStatus::ENROLLED->value;
+        }
+        $student = Student::create($validated);
+        $user->notify(new StudentCreated($user, $student));
         return response('', 201);
     }
 
