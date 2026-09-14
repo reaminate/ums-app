@@ -26,3 +26,5 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 tables_test_1.txt
+app/Events/UserRegistered.php
+app/Listeners/StudentRegistered.php

@@ -46,7 +46,7 @@ class AcademicSemesterController extends Controller
         if($request->user()->cannot('view', $academic_semester)){
             abort(403);
         }
-        $academic_semester = AcademicSemester::query()
+        $academic_semester->query()
         ->when($request->has('course_offerings'), function($query){
             $query->load('courseOfferigns');
         })

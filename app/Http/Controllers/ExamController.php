@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ExamResource;
 use App\Models\Exam;
 use App\Http\Requests\StoreExamRequest;
 use App\Http\Requests\UpdateExamRequest;
@@ -17,6 +18,15 @@ class ExamController extends Controller
         if($request->user()->cannot('viewAny', Exam::class)){
             abort(403);
         }
+        $exam = Exam::query()
+        ->when($request->has('course_offering'), function($query){
+            $query->load('courseOffering');
+        })
+        ->when($request->has('exam_marks'), function($query){
+            $query->load('examMarks');
+        })
+        ->get();
+        return ExamResource::collection($exam);
     }
 
     /**
@@ -27,6 +37,8 @@ class ExamController extends Controller
         if($request->user()->cannot('create', Exam::class)){
             abort(403);
         }
+        Exam::create($request->validated());
+        return response('', 201);
     }
 
     /**
@@ -37,6 +49,15 @@ class ExamController extends Controller
         if($request->user()->cannot('view', $exam)){
             abort(403);
         }
+        $exam->query()
+        ->when($request->has('course_offering'), function($query){
+            $query->load('courseOffering');
+        })
+        ->when($request->has('exam_marks'), function($query){
+            $query->load('examMarks');
+        })
+        ->get();
+        return ExamResource::make($exam);
     }
 
     /**
@@ -47,6 +68,8 @@ class ExamController extends Controller
         if($request->user()->cannot('update', $exam)){
             abort(403);
         }
+        $exam->update($request->validated());
+        return response('', 200);
     }
 
     /**
@@ -57,5 +80,7 @@ class ExamController extends Controller
         if($request->user()->cannot('delete', $exam)){
             abort(403);
         }
+        $exam->delete();
+        return response()->noContent();
     }
 }

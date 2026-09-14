@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\AttendanceResource;
 use App\Models\Attendance;
 use App\Http\Requests\StoreAttendanceRequest;
 use App\Http\Requests\UpdateAttendanceRequest;
@@ -17,6 +18,15 @@ class AttendanceController extends Controller
         if($request->user()->cannot('viewAny', Attendance::class)){
             abort(403);
         }
+        $attendace = Attendance::query()
+        ->when($request->has('student'), function($query){
+            $query->load('student');
+        })
+        ->when($request->has('class_schedule'), function($query){
+            $query->load('classSchedule');
+        })
+        ->get();
+        return AttendanceResource::collection($attendace);
     }
 
     /**
@@ -27,6 +37,8 @@ class AttendanceController extends Controller
         if($request->user()->cannot('create', Attendance::class)){
             abort(403);
         }
+        Attendance::create($request->validated());
+        return response('', 201);
     }
 
     /**
@@ -37,6 +49,15 @@ class AttendanceController extends Controller
         if($request->user()->cannot('view', $attendance)){
             abort(403);
         }
+        $attendance->query()
+        ->when($request->has('student'), function($query){
+            $query->load('student');
+        })
+        ->when($request->has('class_schedule'), function($query){
+            $query->load('classSchedule');
+        })
+        ->get();
+        return AttendanceResource::make($attendance);
     }
 
     /**
@@ -47,6 +68,8 @@ class AttendanceController extends Controller
         if($request->user()->cannot('update', $attendance)){
             abort(403);
         }
+        $attendance->update($request->validated());
+        return response('', 200);
     }
 
     /**
@@ -57,5 +80,7 @@ class AttendanceController extends Controller
         if($request->user()->cannot('delete', $attendance)){
             abort(403);
         }
+        $attendance->delete();
+        return response()->noContent();
     }
 }

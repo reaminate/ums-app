@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ExamMarkResource;
 use App\Models\ExamMark;
 use App\Http\Requests\StoreExamMarkRequest;
 use App\Http\Requests\UpdateExamMarkRequest;
@@ -17,6 +18,15 @@ class ExamMarkController extends Controller
         if($request->user()->cannot('viewAny', ExamMark::class)){
             abort(403);
         }
+        $exam_mark = ExamMark::query()
+        ->when($request->has('exam'), function($query){
+            $query->load('exam');
+        })
+        ->when($request->has('student'), function($query){
+            $query->load('student');
+        })
+        ->get();
+        return ExamMarkResource::collection($exam_mark);
     }
 
     /**
@@ -27,6 +37,8 @@ class ExamMarkController extends Controller
         if($request->user()->cannot('create', ExamMark::class)){
             abort(403);
         }
+        ExamMark::create($request->validated());
+        return response('', 201);
     }
 
     /**
@@ -37,6 +49,15 @@ class ExamMarkController extends Controller
         if($request->user()->cannot('view', $exam_mark)){
             abort(403);
         }
+        $exam_mark->query()
+        ->when($request->has('exam'), function($query){
+            $query->load('exam');
+        })
+        ->when($request->has('student'), function($query){
+            $query->load('student');
+        })
+        ->get();
+        return ExamMarkResource::make($exam_mark);
     }
 
     /**
@@ -47,6 +68,8 @@ class ExamMarkController extends Controller
         if($request->user()->cannot('update', $exam_mark)){
             abort(403);
         }
+        $exam_mark->update($request->validated());
+        return response('', 200);
     }
 
     /**
@@ -57,5 +80,7 @@ class ExamMarkController extends Controller
         if($request->user()->cannot('delete', $exam_mark)){
             abort(403);
         }
+        $exam_mark->delete();
+        return response()->noContent();
     }
 }

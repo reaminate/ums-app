@@ -63,7 +63,7 @@ class AssignmentController extends Controller
         if($request->user()->cannot('view', $assignment)){
             abort(403);
         }
-        $assignment = Assignment::query()
+        $assignment->query()
         ->when($request->has('course_offering'), function($query){
             $query->load('courseOffering');
         })

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CourseResource;
 use App\Models\Course;
 use App\Http\Requests\StoreCourseRequest;
 use App\Http\Requests\UpdateCourseRequest;
@@ -17,6 +18,24 @@ class CourseController extends Controller
         if($request->user()->cannot('viewAny', Course::class)){
             abort(403);
         }
+        $course = Course::query()
+        ->when($request->has('department'), function($query){
+            $query->load('department');
+        })
+        ->when($request->has('academic_programs'), function($query){
+            $query->load('academicPrograms');
+        })
+        ->when($request->has('course_offerings'), function($query){
+            $query->load('courseOfferings');
+        })
+        ->when($request->has('prerequisites'), function($query){
+            $query->load('prerequisites');
+        })
+        ->when($request->has('prerequisite_for'), function($query){
+            $query->load('prerequisiteFor');
+        })
+        ->get();
+        return CourseResource::collection($course);
     }
 
     /**
@@ -27,6 +46,8 @@ class CourseController extends Controller
         if($request->user()->cannot('create', Course::class)){
             abort(403);
         }
+        Course::create($request->validated());
+        return response('', 201);
     }
 
     /**
@@ -37,6 +58,24 @@ class CourseController extends Controller
         if($request->user()->cannot('view', $course)){
             abort(403);
         }
+        $course->query()
+        ->when($request->has('department'), function($query){
+            $query->load('department');
+        })
+        ->when($request->has('academic_programs'), function($query){
+            $query->load('academicPrograms');
+        })
+        ->when($request->has('course_offerings'), function($query){
+            $query->load('courseOfferings');
+        })
+        ->when($request->has('prerequisites'), function($query){
+            $query->load('prerequisites');
+        })
+        ->when($request->has('prerequisite_for'), function($query){
+            $query->load('prerequisiteFor');
+        })
+        ->get();
+        return CourseResource::make($course);
     }
 
     /**
@@ -47,6 +86,8 @@ class CourseController extends Controller
         if($request->user()->cannot('update', $course)){
             abort(403);
         }
+        $course->update($request->validated());
+        return response('', 200);
     }
 
     /**
@@ -57,5 +98,7 @@ class CourseController extends Controller
         if($request->user()->cannot('delete', $course)){
             abort(403);
         }
+        $course->delete();
+        return response()->noContent();
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\DepartmentResource;
 use App\Models\Department;
 use App\Http\Requests\StoreDepartmentRequest;
 use App\Http\Requests\UpdateDepartmentRequest;
@@ -17,6 +18,21 @@ class DepartmentController extends Controller
         if($request->user()->cannot('viewAny', Department::class)){
             abort(403);
         }
+        $department = Department::query()
+        ->when($request->has('faculty'), function($query){
+            $query->load('faculty');
+        })
+        ->when($request->has('academic_programs'), function($query){
+            $query->load('academicPrograms');
+        })
+        ->when($request->has('courses'), function($query){
+            $query->load('courses');
+        })
+        ->when($request->has('lecturers'), function($query){
+            $query->load('lecturers');
+        })
+        ->get();
+        return DepartmentResource::collection($department);
     }
 
     /**
@@ -27,6 +43,8 @@ class DepartmentController extends Controller
         if($request->user()->cannot('create', Department::class)){
             abort(403);
         }
+        Department::create($request->validated());
+        return response('', 201);
     }
 
     /**
@@ -37,6 +55,21 @@ class DepartmentController extends Controller
         if($request->user()->cannot('view', $department)){
             abort(403);
         }
+        $department->query()
+        ->when($request->has('faculty'), function($query){
+            $query->load('faculty');
+        })
+        ->when($request->has('academic_programs'), function($query){
+            $query->load('academicPrograms');
+        })
+        ->when($request->has('courses'), function($query){
+            $query->load('courses');
+        })
+        ->when($request->has('lecturers'), function($query){
+            $query->load('lecturers');
+        })
+        ->get();
+        return DepartmentResource::make($department);
     }
 
     /**
@@ -47,6 +80,8 @@ class DepartmentController extends Controller
         if($request->user()->cannot('update', $department)){
             abort(403);
         }
+        $department->update($request->validated());
+        return response('', 200);
     }
 
     /**
@@ -57,5 +92,7 @@ class DepartmentController extends Controller
         if($request->user()->cannot('delete', $department)){
             abort(403);
         }
+        $department->delete();
+        return response()->noContent();
     }
 }

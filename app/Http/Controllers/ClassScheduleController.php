@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ClassScheduleResource;
 use App\Models\ClassSchedule;
 use App\Http\Requests\StoreClassScheduleRequest;
 use App\Http\Requests\UpdateClassScheduleRequest;
@@ -17,6 +18,15 @@ class ClassScheduleController extends Controller
         if($request->user()->cannot('viewAny', ClassSchedule::class)){
             abort(403);
         }
+        $class_schedule = ClassSchedule::query()
+        ->when($request->has('course_offering'), function($query){
+            $query->load('courseOffering');
+        })
+        ->when($request->has('attendances'), function($query){
+            $query->load('attendances');
+        })
+        ->get();
+        return ClassScheduleResource::collection($class_schedule);
     }
 
     /**
@@ -27,6 +37,8 @@ class ClassScheduleController extends Controller
         if($request->user()->cannot('create', ClassSchedule::class)){
             abort(403);
         }
+        ClassSchedule::create($request->validated());
+        return response('', 201);
     }
 
     /**
@@ -37,6 +49,15 @@ class ClassScheduleController extends Controller
         if($request->user()->cannot('view', $class_schedule)){
             abort(403);
         }
+        $class_schedule->query()
+        ->when($request->has('course_offering'), function($query){
+            $query->load('courseOffering');
+        })
+        ->when($request->has('attendances'), function($query){
+            $query->load('attendances');
+        })
+        ->get();
+        return ClassScheduleResource::make($class_schedule);
     }
 
     /**
@@ -47,6 +68,8 @@ class ClassScheduleController extends Controller
         if($request->user()->cannot('update', $class_schedule)){
             abort(403);
         }
+        $class_schedule->update($request->validated());
+        return response('', 200);
     }
 
     /**
@@ -57,5 +80,7 @@ class ClassScheduleController extends Controller
         if($request->user()->cannot('delete', $class_schedule)){
             abort(403);
         }
+        $class_schedule->delete();
+        return response()->noContent();
     }
 }

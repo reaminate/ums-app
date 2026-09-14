@@ -18,7 +18,30 @@ class StudentController extends Controller
         if($request->user()->cannot('viewAny', Student::class)){
             abort(403);
         }
-        return StudentResource::collection(Student::all()->load('attendances.classSchedule.courseOffering.course'));
+        $student = Student::query()
+        ->when($request->has('user'), function($query){
+            $query->load('user');
+        })
+        ->when($request->has('academic_program'), function($query){
+            $query->load('academicProgram');
+        })
+        ->when($request->has('course_offerings'), function($query){
+            $query->load('courseOfferings');
+        })
+        ->when($request->has('assignment_submissions'), function($query){
+            $query->load('assignmentSubmissions');
+        })
+        ->when($request->has('attendances'), function($query){
+            $query->load('attendances');
+        })
+        ->when($request->has('exam_marks'), function($query){
+            $query->load('examMarks');
+        })
+        ->when($request->has('grades'), function($query){
+            $query->load('grades');
+        })
+        ->get();
+        return StudentResource::collection($student);
     }
 
     /**
@@ -29,6 +52,8 @@ class StudentController extends Controller
         if($request->user()->cannot('create', Student::class)){
             abort(403);
         }
+        Student::create($request->validated());
+        return response('', 201);
     }
 
     /**
@@ -39,6 +64,30 @@ class StudentController extends Controller
         if($request->user()->cannot('view', $student)){
             abort(403);
         }
+        $student->query()
+        ->when($request->has('user'), function($query){
+            $query->load('user');
+        })
+        ->when($request->has('academic_program'), function($query){
+            $query->load('academicProgram');
+        })
+        ->when($request->has('course_offerings'), function($query){
+            $query->load('courseOfferings');
+        })
+        ->when($request->has('assignment_submissions'), function($query){
+            $query->load('assignmentSubmissions');
+        })
+        ->when($request->has('attendances'), function($query){
+            $query->load('attendances');
+        })
+        ->when($request->has('exam_marks'), function($query){
+            $query->load('examMarks');
+        })
+        ->when($request->has('grades'), function($query){
+            $query->load('grades');
+        })
+        ->get();
+        return StudentResource::make($student);
     }
 
     /**
@@ -49,6 +98,8 @@ class StudentController extends Controller
         if($request->user()->cannot('update', $student)){
             abort(403);
         }
+        $student->update($request->validated());
+        return response('', 200);
     }
 
     /**
@@ -59,5 +110,7 @@ class StudentController extends Controller
         if($request->user()->cannot('delete', $student)){
             abort(403);
         }
+        $student->delete();
+        return response()->noContent();
     }
 }

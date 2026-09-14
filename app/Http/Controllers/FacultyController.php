@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\FacultyResource;
 use App\Models\Faculty;
 use App\Http\Requests\StoreFacultyRequest;
 use App\Http\Requests\UpdateFacultyRequest;
@@ -17,6 +18,12 @@ class FacultyController extends Controller
         if($request->user()->cannot('viewAny', Faculty::class)){
             abort(403);
         }
+        $faculty = Faculty::query()
+        ->when($request->has('departments'), function($query){
+            $query->load('departments');
+        })
+        ->get();
+        return FacultyResource::collection($faculty);
     }
 
     /**
@@ -27,6 +34,8 @@ class FacultyController extends Controller
         if($request->user()->cannot('create', Faculty::class)){
             abort(403);
         }
+        Faculty::create($request->validated());
+        return response('', 201);
     }
 
     /**
@@ -37,6 +46,12 @@ class FacultyController extends Controller
         if($request->user()->cannot('view', $faculty)){
             abort(403);
         }
+        $faculty->query()
+        ->when($request->has('departments'), function($query){
+            $query->load('departments');
+        })
+        ->get();
+        return FacultyResource::make($faculty);
     }
 
     /**
@@ -47,6 +62,8 @@ class FacultyController extends Controller
         if($request->user()->cannot('update', $faculty)){
             abort(403);
         }
+        $faculty->update($request->validated());
+        return response('', 200);
     }
 
     /**
@@ -57,5 +74,7 @@ class FacultyController extends Controller
         if($request->user()->cannot('delete', $faculty)){
             abort(403);
         }
+        $faculty->delete();
+        return response()->noContent();
     }
 }

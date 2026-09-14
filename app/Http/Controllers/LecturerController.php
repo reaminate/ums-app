@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\LecturerResource;
 use App\Models\Lecturer;
 use App\Http\Requests\StoreLecturerRequest;
 use App\Http\Requests\UpdateLecturerRequest;
@@ -17,6 +18,21 @@ class LecturerController extends Controller
         if($request->user()->cannot('viewAny', Lecturer::class)){
             abort(403);
         }
+        $lecturer = Lecturer::query()
+        ->when($request->has('user'), function($query){
+            $query->load('user');
+        })
+        ->when($request->has('department'), function($query){
+            $query->load('department');
+        })
+        ->when($request->has('course_offerings'), function($query){
+            $query->load('courseOfferings');
+        })
+        ->when($request->has('assignment_marks'), function($query){
+            $query->load('assignmentMarks');
+        })
+        ->get();
+        return LecturerResource::collection($lecturer);
     }
 
     /**
@@ -27,6 +43,8 @@ class LecturerController extends Controller
         if($request->user()->cannot('create', Lecturer::class)){
             abort(403);
         }
+        Lecturer::create($request->validated());
+        return response('', 201);
     }
 
     /**
@@ -37,6 +55,21 @@ class LecturerController extends Controller
         if($request->user()->cannot('view', $lecturer)){
             abort(403);
         }
+        $lecturer->query()
+        ->when($request->has('user'), function($query){
+            $query->load('user');
+        })
+        ->when($request->has('department'), function($query){
+            $query->load('department');
+        })
+        ->when($request->has('course_offerings'), function($query){
+            $query->load('courseOfferings');
+        })
+        ->when($request->has('assignment_marks'), function($query){
+            $query->load('assignmentMarks');
+        })
+        ->get();
+        return LecturerResource::make($lecturer);
     }
 
     /**
@@ -47,6 +80,8 @@ class LecturerController extends Controller
         if($request->user()->cannot('update', $lecturer)){
             abort(403);
         }
+        $lecturer->update($request->validated());
+        return response('', 200);
     }
 
     /**
@@ -57,5 +92,7 @@ class LecturerController extends Controller
         if($request->user()->cannot('delete', $lecturer)){
             abort(403);
         }
+        $lecturer->delete();
+        return response()->noContent();
     }
 }

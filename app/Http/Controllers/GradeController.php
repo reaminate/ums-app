@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\GradeResource;
 use App\Models\Grade;
 use App\Http\Requests\StoreGradeRequest;
 use App\Http\Requests\UpdateGradeRequest;
@@ -17,6 +18,15 @@ class GradeController extends Controller
         if($request->user()->cannot('viewAny', Grade::class)){
             abort(403);
         }
+        $grade = Grade::query()
+        ->when($request->has('student'), function($query){
+            $query->load('student');
+        })
+        ->when($request->has('course_offering'), function($query){
+            $query->load('courseOffering');
+        })
+        ->get();
+        return GradeResource::collection($grade);
     }
 
     /**
@@ -27,6 +37,8 @@ class GradeController extends Controller
         if($request->user()->cannot('create', Grade::class)){
             abort(403);
         }
+        Grade::create($request->validated());
+        return response('', 201);
     }
 
     /**
@@ -37,6 +49,15 @@ class GradeController extends Controller
         if($request->user()->cannot('view', $grade)){
             abort(403);
         }
+        $grade->query()
+        ->when($request->has('student'), function($query){
+            $query->load('student');
+        })
+        ->when($request->has('course_offering'), function($query){
+            $query->load('courseOffering');
+        })
+        ->get();
+        return GradeResource::make($grade);
     }
 
     /**
@@ -47,6 +68,8 @@ class GradeController extends Controller
         if($request->user()->cannot('update', $grade)){
             abort(403);
         }
+        $grade->update($request->validated());
+        return response('', 200);
     }
 
     /**
@@ -57,5 +80,7 @@ class GradeController extends Controller
         if($request->user()->cannot('delete', $grade)){
             abort(403);
         }
+        $grade->delete();
+        return response()->noContent();
     }
 }

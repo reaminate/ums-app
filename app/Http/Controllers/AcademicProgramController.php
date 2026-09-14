@@ -51,7 +51,7 @@ class AcademicProgramController extends Controller
         if($request->user()->cannot('view', $academic_program)){
             abort(403);
         }
-        $academic_program = AcademicProgram::query();
+        $academic_program->query();
         $academic_program->when($request->has('department'), function($query){
             $query->load('department');
         })

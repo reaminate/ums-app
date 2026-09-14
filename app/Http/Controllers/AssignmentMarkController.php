@@ -49,7 +49,7 @@ class AssignmentMarkController extends Controller
         if($request->user()->cannot('view', $assignment_mark)){
             abort(403);
         }
-        $assignment_marks = AssignmentMark::query()
+        $assignment_mark->query()
         ->when($request->has('lecturer'), function($query){
             $query->load('lecturer');
         })
