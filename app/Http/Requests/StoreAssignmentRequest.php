@@ -27,7 +27,7 @@ class StoreAssignmentRequest extends FormRequest
         return [
             'course_offering_id' => ['required', 'exists:course_offerings,id'],
             'title' => ['required', 'string'],
-            'description' => ['nullable', 'string'],
+            'description' => ['required', 'string'],
             'due_date' => ['required', 'date_format:Y-m-d', 'date'],
             'max_marks' => ['required', 'numeric', 'decimal:0,2'],
             'file' => ['required', 'file', 'mimes:pdf,docx', 'max:5120'],

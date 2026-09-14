@@ -27,7 +27,7 @@ class AssignmentResource extends JsonResource
             'file_name' => $this->original_name,
             'status' => $this->status,
             'assignment_submissions' => $this->when(
-                $request->user()?->isAdmin(),
+                $request->user()?->isLecturer(),
                 fn()=>AssignmentSubmissionResource::collection($this->whenLoaded('assignmentSubmissions'))
             ),
         ];
