@@ -6,6 +6,7 @@ use App\Http\Resources\AssignmentMarkResource;
 use App\Models\AssignmentMark;
 use App\Http\Requests\StoreAssignmentMarkRequest;
 use App\Http\Requests\UpdateAssignmentMarkRequest;
+use App\Notifications\AssignmentGraded;
 use Illuminate\Http\Request;
 
 class AssignmentMarkController extends Controller
@@ -23,7 +24,7 @@ class AssignmentMarkController extends Controller
             $query->load('lecturer');
         })
         ->when($request->hasAny('assignment_submission'), function($query){
-            $query->load('assignmentSubmissions');
+            $query->load('assignmentSubmission');
         })
         ->get();
         return AssignmentMarkResource::collection($assignment_marks);
@@ -37,7 +38,9 @@ class AssignmentMarkController extends Controller
         if($request->user()->cannot('create', AssignmentMark::class)){
             abort(403);
         }
-        AssignmentMark::create($request->validated());
+        $assignment_mark = AssignmentMark::create($request->validated());
+        $student = $assignment_mark->assignmentSubmission->student();
+        $student->user->notify(new AssignmentGraded($assignment_mark));
         return response('', 201);
     }
 
@@ -54,7 +57,7 @@ class AssignmentMarkController extends Controller
             $query->load('lecturer');
         })
         ->when($request->hasAny('assignment_submission'), function($query){
-            $query->load('assignmentSubmissions');
+            $query->load('assignmentSubmission');
         })
         ->get();
         return AssignmentMarkResource::make($assignment_mark);

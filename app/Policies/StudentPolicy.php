@@ -90,4 +90,15 @@ class StudentPolicy
         }
         return true;
     }
+
+    /**
+     * Determine whether user can actually enroll the student
+     */
+    public function enroll(User $user):bool
+    {
+        if(!$user->isAdmin()){
+            return false;
+        }
+        return true;
+    }
 }

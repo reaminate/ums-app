@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 use App\Enums\CourseOfferingStatus;
+use App\Enums\EnrollmentStatus;
 use App\Enums\StudentStatus;
 use App\Models\CourseOffering;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -33,7 +34,8 @@ class UpdateStudentRequest extends FormRequest
             'program_id' => ['sometimes', 'exists:academic_programs,id'],
             'enrollment_year' => ['sometimes', 'integer', 'digits:4'],
             'status' => ['sometimes', new Enum(StudentStatus::class)],
-            'course_offerings' => ['sometimes', 'array'],
+            'enrollment_status' => ['sometimes', new Enum(EnrollmentStatus::class)],
+            'course_offerings' => ['sometimes', 'array', 'max:4'],
             'course_offerings.*' => [
                 'integer',
                 'distinct',

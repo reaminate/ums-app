@@ -6,6 +6,8 @@ use App\Http\Resources\ExamMarkResource;
 use App\Models\ExamMark;
 use App\Http\Requests\StoreExamMarkRequest;
 use App\Http\Requests\UpdateExamMarkRequest;
+use App\Models\Student;
+use App\Notifications\ExamResultPublished;
 use Illuminate\Http\Request;
 
 class ExamMarkController extends Controller
@@ -37,7 +39,9 @@ class ExamMarkController extends Controller
         if($request->user()->cannot('create', ExamMark::class)){
             abort(403);
         }
-        ExamMark::create($request->validated());
+        $exam_mark = ExamMark::create($request->validated());
+        $student = Student::findOrFail($exam_mark->student_id);
+        $student->user->notify(new ExamResultPublished($exam_mark));
         return response('', 201);
     }
 

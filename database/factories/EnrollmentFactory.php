@@ -22,11 +22,12 @@ class EnrollmentFactory extends Factory
     {
         $status = $this->faker->randomElement(EnrollmentStatus::cases());
         $enrolled_at = fake()->date();
-        if($status == EnrollmentStatus::ENROLLED){
-            $withdrawn_at = null;
-        }else{
-            $withdrawn_at = fake()->dateTimeBetween($enrolled_at)->format('Y-m-d');
-        }
+
+        [$enrolled_at, $withdrawn_at] = match ($status) {
+            EnrollmentStatus::PROCESSING => [null, null],
+            EnrollmentStatus::ENROLLED => [$enrolled_at, null],
+            EnrollmentStatus::COMPLETED, EnrollmentStatus::FAILED, EnrollmentStatus::WITHDRAWN => [$enrolled_at, fake()->dateTimeBetween($enrolled_at)->format('Y-m-d')],
+        };
 
         return[
             'student_id' => $this->faker->randomElement(Student::pluck('id')),

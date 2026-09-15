@@ -37,5 +37,6 @@ Route::apiResource('/faculty', FacultyController::class);
 Route::apiResource('/grade', GradeController::class);
 Route::apiResource('/lecturer', LecturerController::class);
 Route::apiResource('/student', StudentController::class);
+Route::put('/student/{student}/enroll', [StudentController::class, 'enroll']);
 Route::apiResource('/user', UserController::class);
 

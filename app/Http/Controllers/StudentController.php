@@ -2,16 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\EnrollmentStatus;
 use App\Enums\StudentStatus;
 use App\Enums\UserType;
+use App\Http\Requests\StudentEnrollRequest;
 use App\Http\Resources\StudentResource;
+use App\Models\CourseOffering;
 use App\Models\Student;
 use App\Http\Requests\StoreStudentRequest;
 use App\Http\Requests\UpdateStudentRequest;
 use App\Models\User;
+use App\Notifications\EnrollmentStatusUpdate;
 use App\Notifications\StudentCreated;
 use Illuminate\Http\Request;
-use function Symfony\Component\Clock\now;
+;
 
 class StudentController extends Controller
 {
@@ -62,9 +66,10 @@ class StudentController extends Controller
         if(isset($user)){
             $validated['name'] = $user->name;
             $validated['email'] = $user->email;
-            $validated['enrollment_year'] = now();
+            $validated['enrollment_year'] = now()->year;
             $validated['status'] = StudentStatus::ENROLLED->value;
         }
+        $courses = [];
         if(isset($validated['course_offerings'])){
             $courses = $validated['course_offerings'];
             unset($validated['course_offerings']);
@@ -137,5 +142,30 @@ class StudentController extends Controller
         }
         $student->delete();
         return response()->noContent();
+    }
+
+    /**
+     * enrolls the students, only admins should be able to do this
+     */
+    public function enroll(Student $student, StudentEnrollRequest $request){
+        if($request->user()->cannot('enroll', Student::class)){
+            abort(403);
+        }
+        $validated = $request->validated();
+        $courses_id = $validated['course_offering_id'];
+        $pivotData = collect($validated)->only(['status', 'enrolled_at', 'withdrawn_at'])->all();
+
+        foreach($courses_id as $course_id){
+            $enrollment = $student->courseOfferings()->where('course_offering_id', $course_id)->first();
+
+            if(!$enrollment){
+                abort(404, "Student {$student->id} is not enrolled in course offering {$course_id}.");
+            }
+
+            $enrollment->pivot->update($pivotData);
+            $student->user->notify(new EnrollmentStatusUpdate($student, $enrollment, $pivotData['status']));
+        }
+
+        return response('', 200);
     }
 }

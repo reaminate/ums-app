@@ -2,7 +2,10 @@
 
 namespace App\Notifications;
 
+use App\Models\Course;
+use App\Models\Exam;
 use App\Models\ExamMark;
+use App\Models\Student;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -27,7 +30,26 @@ class ExamResultPublished extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['database', 'mail'];
+    }
+     /**
+     * Get the mail representation of the notification.
+     */
+    public function toMail(object $notifiable): MailMessage
+    {
+        $student = Student::findOrFail($this->examMark->student_id);
+        $exam= Exam::findOrFail($this->examMark->exam_id);
+        $course = Course::findOrFail($exam->courseOffering->course_id);
+        $exam_mark = $this->examMark;
+        $url = url('/student/'.$student->id);
+        return (new MailMessage)
+            ->salutation('Assalaamu Alaikum')
+            ->greeting('Hello')
+            ->line("The marks for $exam->exam_type for the course $course->name have been published")
+            ->line("You got $exam_mark->marks")
+            ->action('You may view your information here', $url)
+            ->line('kind regards')
+            ->from('studentsupport@gmu.com');          
     }
 
     /**

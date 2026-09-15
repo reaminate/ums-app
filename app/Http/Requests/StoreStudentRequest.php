@@ -31,10 +31,9 @@ class StoreStudentRequest extends FormRequest
         return [
             'user_id' => ['required', 'exists:users,id', 'integer', 'unique:students,user_id'],
             'program_id' => ['required', 'exists:academic_programs,id'],
-            'course_offerings' => ['sometimes', 'array'],
+            'course_offerings' => ['sometimes', 'array','max:4'],
             'course_offerings.*' => [
-                'integer',
-                'distinct',
+                'integer','distinct',
                 Rule::exists('course_offerings', 'id')->where('status', CourseOfferingStatus::OPEN->value),
             ],
         ];

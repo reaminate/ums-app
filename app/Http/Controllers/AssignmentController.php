@@ -6,6 +6,9 @@ use App\Http\Resources\AssignmentResource;
 use App\Models\Assignment;
 use App\Http\Requests\StoreAssignmentRequest;
 use App\Http\Requests\UpdateAssignmentRequest;
+use App\Models\CourseOffering;
+use App\Models\Student;
+use App\Notifications\NewAssignmentPublished;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 class AssignmentController extends Controller
@@ -41,7 +44,7 @@ class AssignmentController extends Controller
         $file = $validated['file'];
         $stored_path = $file->store('assignments', 'public');
 
-        Assignment::create([
+        $assignment = Assignment::create([
             'course_offering_id' => $validated['course_offering_id'],
             'title' => $validated['title'],
             'description' => $validated['description'],
@@ -52,6 +55,11 @@ class AssignmentController extends Controller
             'mime_type' => $file->getMimeType(),
             'status' => $validated['status'],
         ]);
+        $course_offering = CourseOffering::findOrFail($assignment->course_offering_id);
+        $students = $course_offering->students->get();
+        foreach($students as $student){
+            $student->user->notify(new NewAssignmentPublished($assignment, $student));
+        }
         return response('', 201);
     }
 
@@ -91,7 +99,7 @@ class AssignmentController extends Controller
             $validated['mime_type'] = $file->getMimeType();
             unset($validated['file']);
         }
-        $assignment->update([$validated]);
+        $assignment->update($validated);
         return response('', 200);
     }
 

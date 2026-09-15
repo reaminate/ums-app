@@ -8,4 +8,5 @@ enum EnrollmentStatus: string
     case WITHDRAWN = 'withdrawn';
     case COMPLETED = 'completed';
     case FAILED = 'failed';
+    case PROCESSING = 'processing';
 }
