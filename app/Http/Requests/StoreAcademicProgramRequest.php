@@ -30,6 +30,8 @@ class StoreAcademicProgramRequest extends FormRequest
             'qualification_level' => ['required', 'integer', 'max_digits:2', 'min:0'],
             'duration' => ['required', 'integer', 'min:1', 'max_digits:1'],
             'required_credits' => ['required', 'integer', 'min:1000', 'min_digits:4', 'max_digits:6'],
+            'courses' => ['sometimes', 'array'],
+            'courses.*' => ['integer', 'exists:courses,id'],
             'status' => ['required', new Enum(AcademicStatus::class)]
             
         ];

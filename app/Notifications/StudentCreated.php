@@ -29,7 +29,7 @@ class StudentCreated extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['mail','database'];
     }
 
     /**
@@ -41,13 +41,15 @@ class StudentCreated extends Notification implements ShouldQueue
         $academic_program = AcademicProgram::findOrFail($this->student->program_id);
         $url = url('/student/'.$this->student->id);
         return (new MailMessage)
+            ->salutation('Assalaamu Alaikum')
             ->greeting('Hello')
             ->line("We at this univeristy, congratulate you for enrolling in $academic_program->name")
             ->line("Student number: $student_info->student_number")
             ->line("Email: $student_info->email")
             ->line("Password: password123 (We highly encourage you to change this at your convinience)")
             ->action('You may view your information here', $url)
-            ->line('Hope you enjoy your stay here');
+            ->line('kind regards')
+            ->from('studentsupport@gmu.com');          
     }
 
     /**

@@ -29,6 +29,8 @@ class UpdateAcademicSemesterRequest extends FormRequest
             'end_date' => ['sometimes','date', 'date_format:Y-m-d', 'after:start_date'],
             'registration_start_date' => ['sometimes', 'date', 'date_format:Y-m-d', 'before:start_date'],
             'registration_end_date' => ['sometimes', 'date', 'date_format:Y-m-d', 'after:registration_start_date', 'before:start_date'],
+            'courses' => ['sometimes', 'array'],
+            'courses.*' => ['integer', 'exists:courses,id'],
             'status' => ['sometimes', new Enum(SemesterStatus::class)]
         ];
         

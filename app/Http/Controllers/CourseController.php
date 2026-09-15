@@ -46,7 +46,31 @@ class CourseController extends Controller
         if($request->user()->cannot('create', Course::class)){
             abort(403);
         }
-        Course::create($request->validated());
+        $course_prerequisites = [];
+        $course_prerequisites_for = [];
+        $validated = $request->validated();
+        if(isset($validated['course_prerequisite'])){
+            $course_prerequisites = $validated['course_prerequisite'];
+            unset($validated['course_prerequisite']);
+        }
+        if(isset($validated['course_prerequisite_for'])){
+            $course_prerequisites_for = $validated['course_prerequisite_for'];
+            unset($validated['course_prerequisite_for']);
+        }
+        $course = Course::make($validated);
+        if(($course->course_level == 1 && $course_prerequisites)){
+            return response([
+                'error' => 'cannot have prerequisites for a course of this level',
+            ],  401);
+        }
+        if(($course->course_level == 5 && $course_prerequisites_for)){
+            return response([
+                'error' => 'cannot be a prerequisites for another course this level'
+            ],  401);
+        }
+        $course->save();
+        $course->prerequisites()->sync($course_prerequisites);
+        $course->prerequisiteFor()->sync($course_prerequisites_for);
         return response('', 201);
     }
 
@@ -86,8 +110,36 @@ class CourseController extends Controller
         if($request->user()->cannot('update', $course)){
             abort(403);
         }
-        $course->update($request->validated());
-        return response('', 200);
+        $course_prerequisites = [];
+        $course_prerequisites_for = [];
+        $validated = $request->validated();
+        if(isset($validated['course_prerequisite'])){
+            $course_prerequisites = $validated['course_prerequisite'];
+            unset($validated['course_prerequisite']);
+        }
+        if(isset($validated['course_prerequisite_for'])){
+            $course_prerequisites_for = $validated['course_prerequisite_for'];
+            unset($validated['course_prerequisite_for']);
+        }
+        $new_course_level = $validated['course_level'] ?? $course->course_level;
+        if(in_array($course->id, $course_prerequisites, true) || in_array($course->id, $course_prerequisites_for, true)){
+            return response ([
+                'error' => 'course cannot be a pre-requisite or have pre-requisite for self',
+            ], 401);
+        }
+        if(($new_course_level == 1 && $course_prerequisites)){
+            return response([
+                'error' => 'cannot have prerequisites for a course of this level',
+            ],  401);
+        }
+        if(($new_course_level == 5 && $course_prerequisites_for)){
+            return response([
+                'error' => 'cannot be a prerequisites for another course this level'
+            ],  401);
+        }
+        $course->update($validated);
+        $course->prerequisites()->sync($course_prerequisites);
+        $course->prerequisiteFor()->sync($course_prerequisites_for);
     }
 
     /**

@@ -30,6 +30,10 @@ class StoreCourseRequest extends FormRequest
             'department_id' => ['required', 'exists:departments,id', 'integer'],
             'credit_value' => ['required', 'integer', 'min_digits:3', 'max_digits:4','min:100'],
             'course_level' =>['required', 'integer', 'max_digits:1', 'min_digits:0', 'min:1'],
+            'course_prerequisite' => ['sometimes','array'],
+            'course_prerequisite.*' => ['integer', 'exists:courses,id', 'prohibited_if:course_level,1'],
+            'course_prerequisite_for'=>['sometimes','array'],
+            'course_prerequisite_for.*'=>['integer', 'exists:courses,id'],
             'status' => ['required', new Enum(CourseStatus::class)],
         ];
     }

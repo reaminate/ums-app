@@ -13,21 +13,6 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    public function register(StoreUserRequest $request)
-    {
-        $validated = $request->validated();
-        if(!$request->user()->isAdmin() && $validated['type']===UserType::ADMIN->value){
-            abort(403, 'you are unable to create admin users');
-        }
-        $user = User::create($validated);
-        $token = $user->createToken('usertoken')->plainTextToken;
-        return response([
-            'message' => 'login successful',
-            'user' => $user,
-            'access_token' => $token,
-            'token_type' => 'bearer',
-        ], 201);
-    }
     public function login(AuthUserLogin $request)
     {
         if(!$request->validated()){

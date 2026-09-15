@@ -65,7 +65,12 @@ class StudentController extends Controller
             $validated['enrollment_year'] = now();
             $validated['status'] = StudentStatus::ENROLLED->value;
         }
+        if(isset($validated['course_offerings'])){
+            $courses = $validated['course_offerings'];
+            unset($validated['course_offerings']);
+        }
         $student = Student::create($validated);
+        $student->courseOfferings()->sync($courses);
         $user->notify(new StudentCreated($user, $student));
         return response('', 201);
     }
@@ -112,7 +117,13 @@ class StudentController extends Controller
         if($request->user()->cannot('update', $student)){
             abort(403);
         }
-        $student->update($request->validated());
+        $validated = $request->validated();
+        if(isset($validated['course_offerings'])){
+            $courses = $validated['course_offerings'];
+            unset($validated['course_offerings']);
+            $student->courseOfferings()->sync($courses);
+        }
+        $student->update($validated);
         return response('', 200);
     }
 

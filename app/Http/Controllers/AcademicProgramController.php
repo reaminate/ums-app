@@ -39,7 +39,14 @@ class AcademicProgramController extends Controller
         if($request->user()->cannot('create', AcademicProgram::class)){
             abort(403);
         }
-        AcademicProgram::create($request->validated());
+        $validated = $request->validated();
+        if(isset($validated['courses'])){
+            $courses_array = $validated['courses'];
+            unset($validated['courses']);
+        }
+
+        $program = AcademicProgram::create($validated);
+        $program->courses()->sync($courses_array);
         return response('', 201);
     }
 
@@ -72,7 +79,13 @@ class AcademicProgramController extends Controller
         if($request->user()->cannot('update', $academic_program)){
             abort(403);
         }
-        $academic_program->update($request->validated());
+        $validated = $request->validated();
+        if(isset($validated['courses'])){
+            $courses_array = $validated['courses'];
+            unset($validated['courses']);
+            $academic_program->courses()->sync($courses_array);
+        }
+        $academic_program->update($validated);
         return response('', 200);
     }
 

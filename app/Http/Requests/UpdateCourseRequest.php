@@ -29,6 +29,10 @@ class UpdateCourseRequest extends FormRequest
             'department_id' => ['sometimes', 'exists:departments,id', 'integer'],
             'credit_value' => ['sometimes', 'integer', 'min_digits:3', 'max_digits:4','min:100'],
             'course_level' =>['sometimes', 'integer', 'max_digits:1', 'min_digits:0', 'min:1'],
+            'course_prerequisite' => ['sometimes','array'],
+            'course_prerequisite.*' => ['integer', 'exists:courses,id', 'prohibited_if:course_level,1'],
+            'course_prerequisite_for'=>['sometimes','array'],
+            'course_prerequisite_for.*'=>['integer', 'exists:courses,id'],
             'status' => ['sometimes', new Enum(CourseStatus::class)],
         ];
     }
