@@ -9,24 +9,25 @@ use Illuminate\Validation\Rules\Enum;
 
 class StoreLecturerRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
+    //not really needed as user does this
+    // /**
+    //  * Determine if the user is authorized to make this request.
+    //  */
+    // public function authorize(): bool
+    // {
+    //     return true;
+    // }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
-    public function rules(): array
-    {
-        return [
-            'user_id' => ['integer', 'exists:users,id', 'required'],
-            'department_id' => ['required', 'exists:departments,id', 'integer'],
-        ];
-    }
+    // /**
+    //  * Get the validation rules that apply to the request.
+    //  *
+    //  * @return array<string, ValidationRule|array<mixed>|string>
+    //  */
+    // public function rules(): array
+    // {
+    //     return [
+    //         'user_id' => ['integer', 'exists:users,id', 'required'],
+    //         'department_id' => ['required', 'exists:departments,id', 'integer'],
+    //     ];
+    // }
 }

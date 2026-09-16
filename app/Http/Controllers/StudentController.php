@@ -7,7 +7,8 @@ use App\Enums\StudentStatus;
 use App\Enums\UserType;
 use App\Http\Requests\StudentEnrollRequest;
 use App\Http\Resources\StudentResource;
-use App\Models\CourseOffering;
+use App\Models\Attendance;
+use App\Models\Enrollment;
 use App\Models\Student;
 use App\Http\Requests\StoreStudentRequest;
 use App\Http\Requests\UpdateStudentRequest;
@@ -56,30 +57,30 @@ class StudentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreStudentRequest $request)
-    {
-        if($request->user()->cannot('create', Student::class)){
-            abort(403);
-        }
-        $validated = $request->validated();
-        $user = User::findOrFail($validated['user_id']);
-        if(isset($user)){
-            $validated['name'] = $user->name;
-            $validated['email'] = $user->email;
-            $validated['enrollment_year'] = now()->year;
-            $validated['status'] = StudentStatus::ENROLLED->value;
-        }
-        $courses = [];
-        if(isset($validated['course_offerings'])){
-            $courses = $validated['course_offerings'];
-            unset($validated['course_offerings']);
-        }
-        $student = Student::create($validated);
-        $student->courseOfferings()->sync($courses);
-        $user->notify(new StudentCreated($user, $student));
-        return response('', 201);
-    }
-
+    //dont need this as student is automatically created by admin when creating user
+    // public function store(StoreStudentRequest $request)
+    // {
+    //     if($request->user()->cannot('create', Student::class)){
+    //         abort(403);
+    //     }
+    //     $validated = $request->validated();
+    //     $user = User::findOrFail($validated['user_id']);
+    //     if(isset($user)){
+    //         $validated['name'] = $user->name;
+    //         $validated['email'] = $user->email;
+    //         $validated['enrollment_year'] = now()->year;
+    //         $validated['status'] = StudentStatus::ENROLLED->value;
+    //     }
+    //     $courses = [];
+    //     if(isset($validated['course_offerings'])){
+    //         $courses = $validated['course_offerings'];
+    //         unset($validated['course_offerings']);
+    //     }
+    //     $student = Student::create($validated);
+    //     $student->courseOfferings()->sync($courses);
+    //     $user->notify(new StudentCreated($user, $student));
+    //     return response('', 201);
+    // }
     /**
      * Display the specified resource.
      */
@@ -157,9 +158,14 @@ class StudentController extends Controller
 
         foreach($courses_id as $course_id){
             $enrollment = $student->courseOfferings()->where('course_offering_id', $course_id)->first();
-
             if(!$enrollment){
                 abort(404, "Student {$student->id} is not enrolled in course offering {$course_id}.");
+            }
+
+            if($pivotData['status'] === EnrollmentStatus::ENROLLED->value
+                && $enrollment->enrolledStudents()->count() >= $enrollment->max_students){
+                $enrollment->pivot->delete();
+                abort(422, "Course offering {$course_id} has reached its maximum number of students. The pending enrollment request has been removed.");
             }
 
             $enrollment->pivot->update($pivotData);

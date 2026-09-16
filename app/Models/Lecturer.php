@@ -34,14 +34,7 @@ class Lecturer extends Model
     }
     protected static function booted():void
     {
-        // staff_number is NOT NULL/unique but its real value is derived from the
-        // auto-incremented id, which doesn't exist yet at insert time. Insert a
-        // unique placeholder first, then overwrite it with the real value once the
-        // id is known.
         static::creating(function($model){
-            $model->staff_number ??= (string) Str::ulid();
-        });
-        static::created(function($model){
             $staff_id_number =(int) round(((($model->id + 576.57)*162.30987)-10)/30.3);
 
             $model->staff_number = "L0.$staff_id_number";

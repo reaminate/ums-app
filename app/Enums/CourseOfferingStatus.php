@@ -6,5 +6,5 @@ enum CourseOfferingStatus: string
 {
     case OPEN = 'open';
     case CLOSED = 'closed';
-    case ONGOINg = 'ongoing';
+    case ONGOING = 'ongoing';
 }

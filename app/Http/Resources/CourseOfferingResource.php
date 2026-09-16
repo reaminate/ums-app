@@ -28,6 +28,10 @@ class CourseOfferingResource extends JsonResource
                 $request->user()?->isAdmin(),
                 fn () => StudentResource::collection($this->whenLoaded('students'))
             ),
+            'enrolled_students' => $this->when(
+                $request->user()?->isAdmin(),
+                fn () => StudentResource::collection($this->whenLoaded('enrolledStudents'))
+            ),
             'class_schedules' => ClassScheduleResource::collection($this->whenLoaded('classSchedules')),
             'assignments' => $this->when(
                 $request->user()?->isAdmin(),

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\LecturerStatus;
 use App\Http\Resources\LecturerResource;
+use App\Models\CourseOffering;
 use App\Models\Lecturer;
 use App\Http\Requests\StoreLecturerRequest;
 use App\Http\Requests\UpdateLecturerRequest;
@@ -40,21 +41,22 @@ class LecturerController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreLecturerRequest $request)
-    {
-        if($request->user()->cannot('create', Lecturer::class)){
-            abort(403);
-        }
-        $validated = $request->validated();
-        $user = User::findOrFail($validated['user_id']);
-        if(isset($user)){
-            $validated['name'] = $user->name;
-            $validated['email'] = $user->email;
-            $validated['status'] = LecturerStatus::AVAILABLE->value;
-        }
-        Lecturer::create($request->validated());
-        return response('', 201);
-    }
+    //dont need this as lecturer is automatically created by admin when creating user
+    // public function store(StoreLecturerRequest $request)
+    // {
+    //     if($request->user()->cannot('create', Lecturer::class)){
+    //         abort(403);
+    //     }
+    //     $validated = $request->validated();
+    //     $user = User::findOrFail($validated['user_id']);
+    //     if(isset($user)){
+    //         $validated['name'] = $user->name;
+    //         $validated['email'] = $user->email;
+    //         $validated['status'] = LecturerStatus::AVAILABLE->value;
+    //     }
+    //     Lecturer::create($request->validated());
+    //     return response('', 201);
+    // }
 
     /**
      * Display the specified resource.
@@ -89,7 +91,20 @@ class LecturerController extends Controller
         if($request->user()->cannot('update', $lecturer)){
             abort(403);
         }
-        $lecturer->update($request->validated());
+        $validated = $request->validated();
+        $course_offering = CourseOffering::query()
+        ->where('lecturer_id', $lecturer->__get('id'))
+        ->where('end_date', '>', now())
+        ->first();
+        //if lecturer is still teaching a course and trying to go on leave, deny
+        if($course_offering && $validated['status'] == LecturerStatus::ONLEAVE->value){
+            unset($validated['status']);
+            $lecturer->update($validated);
+            return response()->json([
+                'message' => 'You cannot go on leave as youre still teaching'
+            ], 200);
+        }
+        $lecturer->update($validated);
         return response('', 200);
     }
 

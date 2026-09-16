@@ -23,7 +23,7 @@ class UpdateLecturerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => ['integer', 'exists:users,id', 'sometimes'],
+            //'user_id' => ['integer', 'exists:users,id', 'sometimes'],
             'name' => ['string', 'sometimes'],
             'email' => ['email', 'sometimes'],
             'department_id' => ['sometimes', 'exists:departments,id', 'integer'],

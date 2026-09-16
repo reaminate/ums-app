@@ -28,11 +28,11 @@ class UpdateStudentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => ['sometimes', 'exists:users,id', 'integer', Rule::unique('students', 'user_id')->ignore($this->route('student'))],
+            //'user_id' => ['sometimes', 'exists:users,id', 'integer', Rule::unique('students', 'user_id')->ignore($this->route('student'))],
             'name' => ['sometimes', 'string'],
             'email' => ['sometimes', 'email'],
             'program_id' => ['sometimes', 'exists:academic_programs,id'],
-            'enrollment_year' => ['sometimes', 'integer', 'digits:4'],
+            //'enrollment_year' => ['sometimes', 'integer', 'digits:4'],
             'status' => ['sometimes', new Enum(StudentStatus::class)],
             'enrollment_status' => ['sometimes', new Enum(EnrollmentStatus::class)],
             'course_offerings' => ['sometimes', 'array', 'max:4'],

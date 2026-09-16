@@ -25,7 +25,7 @@ class UpdateAttendanceRequest extends FormRequest
         return [
             'student_id' => ['sometimes', 'exists:students,id'],
             'class_schedule_id' => ['sometimes', 'exists:class_schedules,id', Rule::unique('attendances', 'class_schedule_id')->where('student_id', $this->input('student_id'))->ignore($this->route('attendance'))],
-            'total_classes' => ['sometimes', 'integer', 'min:0'],
+            //'total_classes' => ['sometimes', 'integer', 'min:0'],
             'attendance_value' => ['sometimes', 'numeric', 'decimal:0,2'],
             'recorded_at' => ['sometimes', 'date_format:H:i']
         ];

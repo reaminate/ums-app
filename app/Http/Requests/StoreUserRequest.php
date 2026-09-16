@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Enums\UserType;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Rules\Password;
 
@@ -31,6 +32,11 @@ class StoreUserRequest extends FormRequest
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', Password::min(7)],
             'is_active' => ['required', 'boolean'],
+            'program_id' => [
+                Rule::requiredIf(function () {
+                    return $this->input('type') === UserType::STUDENT->value;
+                }),
+            ],
         ];
     }
 }

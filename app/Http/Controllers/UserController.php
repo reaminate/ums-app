@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\UserType;
+use App\Events\NewUserCreated;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
@@ -38,7 +39,10 @@ class UserController extends Controller
         if($request->user()->cannot('create', User::class)){
             abort(403);
         }
-        User::create($request->validated());
+        $validated = $request->validated();
+        $user = User::create($validated);
+        $validated['id'] = $user->__get('id');
+        NewUserCreated::dispatch($validated);
         return response('', 201);
     }
 

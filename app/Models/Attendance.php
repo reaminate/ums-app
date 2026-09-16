@@ -23,5 +23,12 @@ class Attendance extends Model
     {
         return $this->belongsTo(ClassSchedule::class, 'class_schedule_id');
     }
-    
+    protected static function booted():void{
+        static::creating(function($model){
+            $model->total_classes = 1;
+        });
+        static::updating(function($model){
+            $model->total_classes++;
+        } );
+    }
 }

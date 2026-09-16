@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\EnrollmentStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -46,6 +47,10 @@ class CourseOffering extends Model
     public function grades(): HasMany
     {
         return $this->hasMany(Grade::class, 'course_offering_id');
+    }
+    public function enrolledStudents(): BelongsToMany
+    {
+        return $this->students()->wherePivot('status', EnrollmentStatus::ENROLLED->value);
     }
     
 }

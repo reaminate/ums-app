@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\LecturerStatus;
 use App\Http\Resources\CourseOfferingResource;
 use App\Models\CourseOffering;
 use App\Http\Requests\StoreCourseOfferingRequest;
 use App\Http\Requests\UpdateCourseOfferingRequest;
+use App\Models\Lecturer;
 use Illuminate\Http\Request;
 
 class CourseOfferingController extends Controller
@@ -31,6 +33,9 @@ class CourseOfferingController extends Controller
         ->when($request->has('students'), function($query){
             $query->load('students');
         })
+        ->when($request->has('enrolled_students'), function($query){
+            $query->load('enrolledStudents');
+        })
         ->when($request->has('class_schedules'), function($query){
             $query->load('classSchedules');
         })
@@ -55,7 +60,9 @@ class CourseOfferingController extends Controller
         if($request->user()->cannot('create', CourseOffering::class)){
             abort(403);
         }
-        CourseOffering::create($request->validated());
+
+        $course_offering = CourseOffering::create($request->validated());
+        $lecturer = Lecturer::find($course_offering->lecturer_id)->update(['status'=> LecturerStatus::TEACHING]);
         return response('', 201);
     }
 
@@ -79,6 +86,9 @@ class CourseOfferingController extends Controller
         })
         ->when($request->has('students'), function($query){
             $query->load('students');
+        })
+        ->when($request->has('enrolled_students'), function($query){
+            $query->load('enrolledStudents');
         })
         ->when($request->has('class_schedules'), function($query){
             $query->load('classSchedules');
