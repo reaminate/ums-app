@@ -25,6 +25,8 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function(){
     Route::put('/student/{student}/enroll', [StudentController::class, 'enroll']);
     Route::get('/logout', [AuthController::class, 'logout']);
+    Route::post('/course-offering/{id}/enroll');
+
     Route::apiResource('/academic-program', AcademicProgramController::class);
     Route::apiResource('/academic-semester', AcademicSemesterController::class);
     Route::apiResource('/assignment', AssignmentController::class);

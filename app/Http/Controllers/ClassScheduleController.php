@@ -78,7 +78,7 @@ class ClassScheduleController extends Controller
             abort(403);
         }
         $validated = $request->validated();
-        $merge = array_keys(
+        $merge = array_merge(
             $class_schedule->only(['day', 'start_time', 'end_time', 'room_number', 'course_offering_id']),
             $validated
         );

@@ -40,7 +40,7 @@ class AssignmentMarkController extends Controller
             abort(403);
         }
         $assignment_mark = AssignmentMark::create($request->validated());
-        $student = $assignment_mark->assignmentSubmission->student();
+        $student = $assignment_mark->assignmentSubmission->student;
         $student->user->notify(new AssignmentGraded($assignment_mark));
         return response('', 201);
     }

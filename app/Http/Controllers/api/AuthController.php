@@ -9,6 +9,8 @@ use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -19,7 +21,17 @@ class AuthController extends Controller
             return response()->json([
                 'message'=> 'email or password is required'
             ], 422);
-        }      
+        } 
+        $validated = $request->validated();
+        $key = Str::lower($validated['email']).'|'.$request->ip();
+        if(RateLimiter::tooManyAttempts($key, 5)){
+            $seconds = RateLimiter::availableIn($key);
+            throw ValidationException::withMessages([
+                'error' => 'too many login attempts',
+                'try_again' => $seconds,
+            ]);
+        }
+
         $user = User::where("email", $request->email)->first();
         if(!$user || !Hash::check($request->password, $user->password)){
             throw ValidationException::withMessages([

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\GradeUpdate;
 use App\Http\Resources\ExamMarkResource;
+use App\Models\AssignmentMark;
 use App\Models\ExamMark;
 use App\Http\Requests\StoreExamMarkRequest;
 use App\Http\Requests\UpdateExamMarkRequest;
@@ -78,7 +79,7 @@ class ExamMarkController extends Controller
         unset($validated['confirm']);
         $exam_mark->update($request->validated());
         if($confirm){
-            GradeUpdate::dispatch(0.0, $exam_mark);
+            GradeUpdate::dispatch(null, $exam_mark);
         }
         return response('', 200);
     }

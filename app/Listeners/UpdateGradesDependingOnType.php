@@ -7,6 +7,7 @@ use App\Models\Grade;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\DB;
+use InvalidArgumentException;
 
 class UpdateGradesDependingOnType
 {
@@ -30,17 +31,16 @@ class UpdateGradesDependingOnType
         try {
             DB::transaction(function() use($assignment_marks, $exam_mark, $student_id, $course_offering_id){
             $grade = Grade::where('student_id', $student_id)
-            ->where('course_offering_id', $course_offering_id)->first()
-            ->incrementEach([
+            ->where('course_offering_id', $course_offering_id)->first();
+            $grade->incrementEach([
                 'total_assignment_score' => $assignment_marks, 
                 'total_test_marks' => $exam_mark,
                 ]);
-            if(($grade->total_assignment_score + $grade->total_test_marks)>100.0){
-                
-            }    
+            throw_if(($grade->total_assignment_score + $grade->total_test_marks)>100.0, InvalidArgumentException::class);   
             }); 
-        } catch (\Throwable $th) {
-            //throw $th;
+        } catch (InvalidArgumentException $e) {
+            DB::rollBack();
+            report($e);
         }
         
          
