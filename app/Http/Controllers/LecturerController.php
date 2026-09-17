@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\LecturerStatus;
+use App\Events\UserInfoUpdated;
 use App\Http\Resources\LecturerResource;
 use App\Models\CourseOffering;
 use App\Models\Lecturer;
@@ -34,7 +35,7 @@ class LecturerController extends Controller
         ->when($request->has('assignment_marks'), function($query){
             $query->load('assignmentMarks');
         })
-        ->get();
+        ->cursorPaginate(10);
         return LecturerResource::collection($lecturer);
     }
 
@@ -104,7 +105,10 @@ class LecturerController extends Controller
                 'message' => 'You cannot go on leave as youre still teaching'
             ], 200);
         }
+        $changes['name'] = $validated['name'] ?? null;
+        $changes['email'] = $validated['email']??null;
         $lecturer->update($validated);
+        UserInfoUpdated::dispatch($lecturer->user, $changes);
         return response('', 200);
     }
 

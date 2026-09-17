@@ -25,7 +25,7 @@ class ExamController extends Controller
         ->when($request->has('exam_marks'), function($query){
             $query->load('examMarks');
         })
-        ->get();
+        ->cursorPaginate(10);
         return ExamResource::collection($exam);
     }
 

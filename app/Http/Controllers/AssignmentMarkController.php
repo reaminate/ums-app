@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\GradeUpdate;
 use App\Http\Resources\AssignmentMarkResource;
 use App\Models\AssignmentMark;
 use App\Http\Requests\StoreAssignmentMarkRequest;
@@ -26,7 +27,7 @@ class AssignmentMarkController extends Controller
         ->when($request->hasAny('assignment_submission'), function($query){
             $query->load('assignmentSubmission');
         })
-        ->get();
+        ->cursorPaginate(10);
         return AssignmentMarkResource::collection($assignment_marks);
     }
 
@@ -71,7 +72,15 @@ class AssignmentMarkController extends Controller
         if($request->user()->cannot('update', $assignment_mark)){
             abort(403);
         }
-        $assignment_mark->update($request->validated());
+        $validated = $request->validated();
+
+        $confirm = $validated['confirm']??false;
+        unset($validated['confirm']);
+
+        $assignment_mark->update($validated);
+        if($confirm){
+            GradeUpdate::dispatch($assignment_mark);
+        }
         return response('', 200);
     }
 

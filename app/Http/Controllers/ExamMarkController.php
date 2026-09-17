@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\GradeUpdate;
 use App\Http\Resources\ExamMarkResource;
 use App\Models\ExamMark;
 use App\Http\Requests\StoreExamMarkRequest;
@@ -27,7 +28,7 @@ class ExamMarkController extends Controller
         ->when($request->has('student'), function($query){
             $query->load('student');
         })
-        ->get();
+        ->cursorPaginate(10);
         return ExamMarkResource::collection($exam_mark);
     }
 
@@ -72,7 +73,13 @@ class ExamMarkController extends Controller
         if($request->user()->cannot('update', $exam_mark)){
             abort(403);
         }
+        $validated = $request->validated();
+        $confirm = $validated['confirm']??false;
+        unset($validated['confirm']);
         $exam_mark->update($request->validated());
+        if($confirm){
+            GradeUpdate::dispatch(0.0, $exam_mark);
+        }
         return response('', 200);
     }
 

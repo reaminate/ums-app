@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Enums\EnrollmentStatus;
 use App\Enums\StudentStatus;
 use App\Enums\UserType;
+use App\Events\UserInfoUpdated;
 use App\Http\Requests\StudentEnrollRequest;
 use App\Http\Resources\StudentResource;
 use App\Models\Attendance;
+use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Student;
 use App\Http\Requests\StoreStudentRequest;
@@ -15,7 +17,11 @@ use App\Http\Requests\UpdateStudentRequest;
 use App\Models\User;
 use App\Notifications\EnrollmentStatusUpdate;
 use App\Notifications\StudentCreated;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use function PHPUnit\Framework\throwException;
 ;
 
 class StudentController extends Controller
@@ -50,7 +56,7 @@ class StudentController extends Controller
         ->when($request->has('grades'), function($query){
             $query->load('grades');
         })
-        ->get();
+        ->cursorPaginate(10);
         return StudentResource::collection($student);
     }
 
@@ -63,20 +69,20 @@ class StudentController extends Controller
     //     if($request->user()->cannot('create', Student::class)){
     //         abort(403);
     //     }
-    //     $validated = $request->validated();
-    //     $user = User::findOrFail($validated['user_id']);
+    //     $student = $request->student();
+    //     $user = User::findOrFail($student['user_id']);
     //     if(isset($user)){
-    //         $validated['name'] = $user->name;
-    //         $validated['email'] = $user->email;
-    //         $validated['enrollment_year'] = now()->year;
-    //         $validated['status'] = StudentStatus::ENROLLED->value;
+    //         $student['name'] = $user->name;
+    //         $student['email'] = $user->email;
+    //         $student['enrollment_year'] = now()->year;
+    //         $student['status'] = StudentStatus::ENROLLED->value;
     //     }
     //     $courses = [];
-    //     if(isset($validated['course_offerings'])){
-    //         $courses = $validated['course_offerings'];
-    //         unset($validated['course_offerings']);
+    //     if(isset($student['course_offerings'])){
+    //         $courses = $student['course_offerings'];
+    //         unset($student['course_offerings']);
     //     }
-    //     $student = Student::create($validated);
+    //     $student = Student::create($student);
     //     $student->courseOfferings()->sync($courses);
     //     $user->notify(new StudentCreated($user, $student));
     //     return response('', 201);
@@ -129,7 +135,10 @@ class StudentController extends Controller
             unset($validated['course_offerings']);
             $student->courseOfferings()->sync($courses);
         }
+        $changes['name'] = $validated['name'] ?? null;
+        $changes['email'] = $validated['email']??null;
         $student->update($validated);
+        UserInfoUpdated::dispatch($student->user, $changes);
         return response('', 200);
     }
 
@@ -148,30 +157,52 @@ class StudentController extends Controller
     /**
      * enrolls the students, only admins should be able to do this
      */
-    public function enroll(Student $student, StudentEnrollRequest $request){
+    public function enroll(Student $student, Request $request){
         if($request->user()->cannot('enroll', Student::class)){
             abort(403);
         }
-        $validated = $request->validated();
-        $courses_id = $validated['course_offering_id'];
-        $pivotData = collect($validated)->only(['status', 'enrolled_at', 'withdrawn_at'])->all();
-
+        $student_courses = Enrollment::where('student_id', $student->id)->where('enrolled_at', null)->get();
+        $courses_id = $student_courses->pluck('course_offering_id');
+        $failed = [];
         foreach($courses_id as $course_id){
-            $enrollment = $student->courseOfferings()->where('course_offering_id', $course_id)->first();
-            if(!$enrollment){
-                abort(404, "Student {$student->id} is not enrolled in course offering {$course_id}.");
-            }
+            DB::beginTransaction();
+            try{
+                $enrollment = $student->courseOfferings()->where('course_offering_id', $course_id)->lockForUpdate()->first();
+                if(!$enrollment){
+                    abort(404, "Student {$student->id} is not enrolled in course offering {$course_id}.");
+                }
 
-            if($pivotData['status'] === EnrollmentStatus::ENROLLED->value
-                && $enrollment->enrolledStudents()->count() >= $enrollment->max_students){
-                $enrollment->pivot->delete();
-                abort(422, "Course offering {$course_id} has reached its maximum number of students. The pending enrollment request has been removed.");
+                if($enrollment->enrolledStudents()->lockForUpdate()->count() >= $enrollment->max_students){
+                    $student->user->notify(new EnrollmentStatusUpdate($student, $enrollment, EnrollmentStatus::FAILED->name));
+                    throw(new ModelNotFoundException())->setModel(Enrollment::class, [$course_id]);
+                }
+                $enrollment->pivot->update([
+                    'status' => EnrollmentStatus::ENROLLED->value,
+                    'enrolled_at' => now(),
+                ]);
+                DB::commit();
+                $student->user->notify(new EnrollmentStatusUpdate($student, $enrollment, EnrollmentStatus::ENROLLED->name));
             }
-
-            $enrollment->pivot->update($pivotData);
-            $student->user->notify(new EnrollmentStatusUpdate($student, $enrollment, $pivotData['status']));
+            catch (ModelNotFoundException $e) {
+                DB::rollBack();
+                report($e);
+                $failed[] = ['course_offering_id' => $course_id, 'reason' => 'max student enrollment has reached for an offering'];
+                continue;
+            } catch (NotFoundHttpException $e){
+                DB::rollBack();
+                report($e);
+                $failed[] = ['course_offering_id' => $course_id, 'reason' => 'student not enrolled in this course'];
+                continue;
+            }
         }
-
-        return response('', 200);
+        if(!empty($failed)){
+            return response()->json([
+                'message' => 'success' 
+            ], 200);
+        }
+        return response()->json([
+            'message' => 'failed_some',
+            'failed' => $failed,
+        ], 200);
     }
 }

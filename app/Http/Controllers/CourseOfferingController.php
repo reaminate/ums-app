@@ -48,7 +48,7 @@ class CourseOfferingController extends Controller
         ->when($request->has('grades'), function($query){
             $query->load('grades');
         })
-        ->get();
+        ->cursorPaginate(10);
         return CourseOfferingResource::collection($course_offering);
     }
 

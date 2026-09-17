@@ -34,7 +34,7 @@ class CourseController extends Controller
         ->when($request->has('prerequisite_for'), function($query){
             $query->load('prerequisiteFor');
         })
-        ->get();
+        ->cursorPaginate(10);
         return CourseResource::collection($course);
     }
 

@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateAssignmentMarkRequest extends FormRequest
 {
@@ -28,6 +29,7 @@ class UpdateAssignmentMarkRequest extends FormRequest
             'comments' => ['sometimes', 'string', 'max:200'],
             'marked_at' => ['sometimes', 'date', 'date_format:Y-m-d'],
             'lecturer_id' => ['sometimes', 'exists:lecturers,id', 'integer'],
+            'confirm' => ['sometimes', 'boolean', Rule::prohibitedIf(fn () => ! $this->filled('lecturer_id'))],
         ];
     }
 }

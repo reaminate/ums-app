@@ -28,7 +28,7 @@ class AssignmentController extends Controller
         ->when($request->has('assignment_submission'), function($query){
             $query->load('assignmentSubmissions');
         })
-        ->get();
+        ->cursorPaginate(10);
         return AssignmentResource::collection($assignment);
     }
 

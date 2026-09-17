@@ -31,7 +31,7 @@ class DepartmentController extends Controller
         ->when($request->has('lecturers'), function($query){
             $query->load('lecturers');
         })
-        ->get();
+        ->cursorPaginate(10);
         return DepartmentResource::collection($department);
     }
 

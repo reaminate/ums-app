@@ -22,7 +22,7 @@ class AcademicSemesterController extends Controller
         ->when($request->has('course_offerings'), function($query){
             $query->load('courseOfferigns');
         })
-        ->get();
+        ->cursorPaginate(10);
         return AcademicSemesterResource::collection($academic_semester);
     }
 

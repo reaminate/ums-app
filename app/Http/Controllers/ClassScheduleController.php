@@ -27,7 +27,7 @@ class ClassScheduleController extends Controller
         ->when($request->has('attendances'), function($query){
             $query->load('attendances');
         })
-        ->get();
+        ->cursorPaginate(10);
         return ClassScheduleResource::collection($class_schedule);
     }
 

@@ -27,7 +27,7 @@ class UserController extends Controller
         ->when($request->has('student'), function($query){
             $query->load('student');
         })
-        ->get();
+        ->cursorPaginate(10);
         return UserResource::collection($user);
     }
 

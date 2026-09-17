@@ -22,7 +22,7 @@ class FacultyController extends Controller
         ->when($request->has('departments'), function($query){
             $query->load('departments');
         })
-        ->get();
+        ->cursorPaginate(10);
         return FacultyResource::collection($faculty);
     }
 

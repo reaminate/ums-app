@@ -27,7 +27,7 @@ class AcademicProgramController extends Controller
         })
         ->when($request->has('students'), function($query){
             $query->load('students');
-        })->get();
+        })->cursorPaginate(10);
         return AcademicProgramResource::collection($academicProgram);
     }
 
