@@ -27,7 +27,8 @@ class UpdateExamMarkRequest extends FormRequest
             'exam_id' => ['sometimes', 'exists:exams,id', 'integer', Rule::unique('exam_marks', 'exam_id')->where('student_id', $this->input('student_id'))->ignore($this->route('exam_mark'))],
             'student_id' => ['sometimes', 'exists:students,id', 'integer'],
             'marks' => ['sometimes', 'numeric', 'decimal:0,2', 'min:0'],
-            'confirm' => ['nullable', 'boolean', Rule::prohibitedIf(fn () => ! $this->filled('lecturer_id'))],
+
+            'confirm' => ['nullable', 'boolean'],
         ];
     }
 }

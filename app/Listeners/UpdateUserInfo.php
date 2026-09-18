@@ -25,6 +25,6 @@ class UpdateUserInfo
         $user = $event->user;
         $changes = $event->changes;
 
-        User::findOrFail($user->id)->update([$changes]);
+        User::findOrFail($user->id)->update($changes);
     }
 }

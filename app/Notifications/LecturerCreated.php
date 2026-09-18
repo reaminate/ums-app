@@ -29,7 +29,7 @@ class LecturerCreated extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail', 'databse'];
+        return ['mail', 'database'];
     }
 
     /**

@@ -54,7 +54,9 @@ class AssignmentPolicy
     public function update(User $user, Assignment $assignment): bool
     {
         $lecturerCan = $assignment->courseOffering()
-            ->where('lecturer_id', $user->id)
+            ->whereHas('lecturer', function($query) use($user){
+                $query->where('user_id', $user->id);
+            })
             ->exists();
         if(!$lecturerCan){
             return false;
@@ -68,7 +70,9 @@ class AssignmentPolicy
     public function delete(User $user, Assignment $assignment): bool
     {
         $lecturerCan = $assignment->courseOffering()
-            ->where('lecturer_id', $user->id)
+            ->whereHas('lecturer', function($query) use($user){
+                $query->where('user_id', $user->id);
+            })
             ->exists();
         if(!$lecturerCan){
             return false;

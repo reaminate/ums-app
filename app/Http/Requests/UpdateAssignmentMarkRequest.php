@@ -29,7 +29,7 @@ class UpdateAssignmentMarkRequest extends FormRequest
             'comments' => ['sometimes', 'string', 'max:200'],
             //'marked_at' => ['sometimes', 'date', 'date_format:Y-m-d'],
             //'lecturer_id' => ['sometimes', 'exists:lecturers,id', 'integer'],
-            'confirm' => ['nullable', 'boolean', Rule::prohibitedIf(fn () => ! $this->filled('lecturer_id'))],
+            'confirm' => ['nullable', 'boolean'],
         ];
     }
 }

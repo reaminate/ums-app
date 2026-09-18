@@ -20,16 +20,16 @@ class DepartmentController extends Controller
         }
         $department = Department::query()
         ->when($request->has('faculty'), function($query){
-            $query->load('faculty');
+            $query->with('faculty');
         })
         ->when($request->has('academic_programs'), function($query){
-            $query->load('academicPrograms');
+            $query->with('academicPrograms');
         })
         ->when($request->has('courses'), function($query){
-            $query->load('courses');
+            $query->with('courses');
         })
         ->when($request->has('lecturers'), function($query){
-            $query->load('lecturers');
+            $query->with('lecturers');
         })
         ->cursorPaginate(10);
         return DepartmentResource::collection($department);
@@ -55,20 +55,12 @@ class DepartmentController extends Controller
         if($request->user()->cannot('view', $department)){
             abort(403);
         }
-        $department->query()
-        ->when($request->has('faculty'), function($query){
-            $query->load('faculty');
-        })
-        ->when($request->has('academic_programs'), function($query){
-            $query->load('academicPrograms');
-        })
-        ->when($request->has('courses'), function($query){
-            $query->load('courses');
-        })
-        ->when($request->has('lecturers'), function($query){
-            $query->load('lecturers');
-        })
-        ->get();
+        $department->load(array_filter([
+            $request->has('faculty') ? 'faculty' : null,
+            $request->has('academic_programs') ? 'academicPrograms' : null,
+            $request->has('courses') ? 'courses' : null,
+            $request->has('lecturers') ? 'lecturers' : null,
+        ]));
         return DepartmentResource::make($department);
     }
 

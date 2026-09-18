@@ -37,25 +37,25 @@ class StudentController extends Controller
         }
         $student = Student::query()
         ->when($request->has('user'), function($query){
-            $query->load('user');
+            $query->with('user');
         })
         ->when($request->has('academic_program'), function($query){
-            $query->load('academicProgram');
+            $query->with('academicProgram');
         })
         ->when($request->has('course_offerings'), function($query){
-            $query->load('courseOfferings');
+            $query->with('courseOfferings');
         })
         ->when($request->has('assignment_submissions'), function($query){
-            $query->load('assignmentSubmissions');
+            $query->with('assignmentSubmissions');
         })
         ->when($request->has('attendances'), function($query){
-            $query->load('attendances');
+            $query->with('attendances');
         })
         ->when($request->has('exam_marks'), function($query){
-            $query->load('examMarks');
+            $query->with('examMarks');
         })
         ->when($request->has('grades'), function($query){
-            $query->load('grades');
+            $query->with('grades');
         })
         ->cursorPaginate(10);
         return StudentResource::collection($student);
@@ -96,29 +96,15 @@ class StudentController extends Controller
         if($request->user()->cannot('view', $student)){
             abort(403);
         }
-        $student->query()
-        ->when($request->has('user'), function($query){
-            $query->load('user');
-        })
-        ->when($request->has('academic_program'), function($query){
-            $query->load('academicProgram');
-        })
-        ->when($request->has('course_offerings'), function($query){
-            $query->load('courseOfferings');
-        })
-        ->when($request->has('assignment_submissions'), function($query){
-            $query->load('assignmentSubmissions');
-        })
-        ->when($request->has('attendances'), function($query){
-            $query->load('attendances');
-        })
-        ->when($request->has('exam_marks'), function($query){
-            $query->load('examMarks');
-        })
-        ->when($request->has('grades'), function($query){
-            $query->load('grades');
-        })
-        ->get();
+        $student->load(array_filter([
+            $request->has('user') ? 'user' : null,
+            $request->has('academic_program') ? 'academicProgram' : null,
+            $request->has('course_offerings') ? 'courseOfferings' : null,
+            $request->has('assignment_submissions') ? 'assignmentSubmissions' : null,
+            $request->has('attendances') ? 'attendances' : null,
+            $request->has('exam_marks') ? 'examMarks' : null,
+            $request->has('grades') ? 'grades' : null,
+        ]));
         return StudentResource::make($student);
     }
 
@@ -136,8 +122,10 @@ class StudentController extends Controller
             unset($validated['course_offerings']);
             $student->courseOfferings()->sync($courses);
         }
-        $changes['name'] = $validated['name'] ?? null;
-        $changes['email'] = $validated['email']??null;
+        $changes = array_filter([
+            'name' => $validated['name'] ?? null,
+            'email' => $validated['email'] ?? null,
+        ]);
         $student->update($validated);
         UserInfoUpdated::dispatch($student->user, $changes);
         return response('', 200);

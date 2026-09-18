@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ClassChanged;
 use App\Http\Resources\ClassScheduleResource;
 use App\Models\ClassSchedule;
 use App\Http\Requests\StoreClassScheduleRequest;
@@ -22,10 +23,10 @@ class ClassScheduleController extends Controller
         }
         $class_schedule = ClassSchedule::query()
         ->when($request->has('course_offering'), function($query){
-            $query->load('courseOffering');
+            $query->with('courseOffering');
         })
         ->when($request->has('attendances'), function($query){
-            $query->load('attendances');
+            $query->with('attendances');
         })
         ->cursorPaginate(10);
         return ClassScheduleResource::collection($class_schedule);
@@ -58,14 +59,10 @@ class ClassScheduleController extends Controller
         if($request->user()->cannot('view', $class_schedule)){
             abort(403);
         }
-        $class_schedule->query()
-        ->when($request->has('course_offering'), function($query){
-            $query->load('courseOffering');
-        })
-        ->when($request->has('attendances'), function($query){
-            $query->load('attendances');
-        })
-        ->get();
+        $class_schedule->load(array_filter([
+            $request->has('course_offering') ? 'courseOffering' : null,
+            $request->has('attendances') ? 'attendances' : null,
+        ]));
         return ClassScheduleResource::make($class_schedule);
     }
 
@@ -88,6 +85,7 @@ class ClassScheduleController extends Controller
             ], 422);
         }
         $class_schedule->update($validated);
+        ClassChanged::dispatch($class_schedule);
         return response('', 200);
     }
 

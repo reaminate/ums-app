@@ -20,7 +20,7 @@ class AcademicSemesterController extends Controller
         }
         $academic_semester = AcademicSemester::query()
         ->when($request->has('course_offerings'), function($query){
-            $query->load('courseOfferigns');
+            $query->with('courseOfferings');
         })
         ->cursorPaginate(10);
         return AcademicSemesterResource::collection($academic_semester);
@@ -46,11 +46,9 @@ class AcademicSemesterController extends Controller
         if($request->user()->cannot('view', $academic_semester)){
             abort(403);
         }
-        $academic_semester->query()
-        ->when($request->has('course_offerings'), function($query){
-            $query->load('courseOfferigns');
-        })
-        ->get();
+        $academic_semester->load(array_filter([
+            $request->has('course_offerings') ? 'courseOfferings' : null,
+        ]));
         return AcademicSemesterResource::make($academic_semester);
     }
 

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
-#[Fillable('status')]
+#[Fillable(['status', 'enrolled_at', 'withdrawn_at'])]
 class Enrollment extends Pivot
 {
     /** @use HasFactory<\Database\Factories\EnrollmentFactory> */

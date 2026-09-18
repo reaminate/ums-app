@@ -21,10 +21,10 @@ class AssignmentMarkController extends Controller
         }
         $assignment_marks = AssignmentMark::query()
         ->when($request->has('lecturer'), function($query){
-            $query->load('lecturer');
+            $query->with('lecturer');
         })
         ->when($request->hasAny('assignment_submission'), function($query){
-            $query->load('assignmentSubmission');
+            $query->with('assignmentSubmission');
         })
         ->cursorPaginate(10);
         return AssignmentMarkResource::collection($assignment_marks);
@@ -38,7 +38,7 @@ class AssignmentMarkController extends Controller
         if($request->user()->cannot('create', AssignmentMark::class)){
             abort(403);
         }
-        $assignmentMarkService->store($request->validated(), $request->user->lectruer->id);
+        $assignmentMarkService->store($request->validated(), $request->user()->lecturer->id);
         return response('', 201);
     }
 
@@ -50,14 +50,10 @@ class AssignmentMarkController extends Controller
         if($request->user()->cannot('view', $assignment_mark)){
             abort(403);
         }
-        $assignment_mark->query()
-        ->when($request->has('lecturer'), function($query){
-            $query->load('lecturer');
-        })
-        ->when($request->hasAny('assignment_submission'), function($query){
-            $query->load('assignmentSubmission');
-        })
-        ->get();
+        $assignment_mark->load(array_filter([
+            $request->has('lecturer') ? 'lecturer' : null,
+            $request->hasAny('assignment_submission') ? 'assignmentSubmission' : null,
+        ]));
         return AssignmentMarkResource::make($assignment_mark);
     }
 
@@ -69,7 +65,7 @@ class AssignmentMarkController extends Controller
         if($request->user()->cannot('update', $assignment_mark)){
             abort(403);
         }
-        $assignmentMarkService->update($assignment_mark, $request->validated(), $request->user->lectruer->id);
+        $assignmentMarkService->update($assignment_mark, $request->validated(), $request->user()->lecturer->id);
         return response('', 200);
     }
 

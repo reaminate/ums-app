@@ -30,7 +30,7 @@ class StoreCourseOfferingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'course_id'=> ['required', 'integer', Rule::exists('course', 'id')->where('status', CourseStatus::OFFERED)],
+            'course_id'=> ['required', 'integer', Rule::exists('courses', 'id')->where('status', CourseStatus::OFFERED)],
             'semester_id' => ['required', 'integer', Rule::exists('academic_semesters', 'id')->whereNot('status', SemesterStatus::FINISHED)],
             'lecturer_id' => ['required', 'integer', Rule::exists('lecturers', 'id')->whereNot('status', LecturerStatus::ONLEAVE)],
             'max_students' => ['required', 'integer', 'min:20', 'max:50'],

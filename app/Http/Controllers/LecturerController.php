@@ -24,16 +24,16 @@ class LecturerController extends Controller
         }
         $lecturer = Lecturer::query()
         ->when($request->has('user'), function($query){
-            $query->load('user');
+            $query->with('user');
         })
         ->when($request->has('department'), function($query){
-            $query->load('department');
+            $query->with('department');
         })
         ->when($request->has('course_offerings'), function($query){
-            $query->load('courseOfferings');
+            $query->with('courseOfferings');
         })
         ->when($request->has('assignment_marks'), function($query){
-            $query->load('assignmentMarks');
+            $query->with('assignmentMarks');
         })
         ->cursorPaginate(10);
         return LecturerResource::collection($lecturer);
@@ -67,20 +67,12 @@ class LecturerController extends Controller
         if($request->user()->cannot('view', $lecturer)){
             abort(403);
         }
-        $lecturer->query()
-        ->when($request->has('user'), function($query){
-            $query->load('user');
-        })
-        ->when($request->has('department'), function($query){
-            $query->load('department');
-        })
-        ->when($request->has('course_offerings'), function($query){
-            $query->load('courseOfferings');
-        })
-        ->when($request->has('assignment_marks'), function($query){
-            $query->load('assignmentMarks');
-        })
-        ->get();
+        $lecturer->load(array_filter([
+            $request->has('user') ? 'user' : null,
+            $request->has('department') ? 'department' : null,
+            $request->has('course_offerings') ? 'courseOfferings' : null,
+            $request->has('assignment_marks') ? 'assignmentMarks' : null,
+        ]));
         return LecturerResource::make($lecturer);
     }
 
@@ -105,8 +97,10 @@ class LecturerController extends Controller
                 'message' => 'You cannot go on leave as youre still teaching'
             ], 200);
         }
-        $changes['name'] = $validated['name'] ?? null;
-        $changes['email'] = $validated['email']??null;
+        $changes = array_filter([
+            'name' => $validated['name'] ?? null,
+            'email' => $validated['email'] ?? null,
+        ]);
         $lecturer->update($validated);
         UserInfoUpdated::dispatch($lecturer->user, $changes);
         return response('', 200);

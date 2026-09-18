@@ -22,13 +22,13 @@ class AssignmentSubmissionController extends Controller
         }
         $assignment_submissions = AssignmentSubmission::query()
         ->when($request->has('assignment_mark'), function($query){
-            $query->load('assignmentMark');
+            $query->with('assignmentMark');
         })
         ->when($request->has('student'), function($query){
-            $query->load('student');
+            $query->with('student');
         })
         ->when($request->has('assignment'), function($query){
-            $query->load('assignment');
+            $query->with('assignment');
         })
         ->cursorPaginate(10);
         return AssignmentSubmissionResource::collection($assignment_submissions);
@@ -48,7 +48,7 @@ class AssignmentSubmissionController extends Controller
         $assignment = Assignment::findOrFail($validated['assignment_id']);
         AssignmentSubmission::create([
             'assignment_id' => $validated['assignment_id'],
-            'student_id' => $request->user->student->id,
+            'student_id' => $request->user()->student->id,
             'file_path' => $stored_path,
             'original_name' =>  $file->getClientOriginalName(),
             'mime_type' => $file->getMimeType(),
@@ -67,17 +67,11 @@ class AssignmentSubmissionController extends Controller
         if($request->user()->cannot('view', $assignment_submission)){
             abort(403);
         }
-        $assignment_submission->query()
-        ->when($request->has('assignment_mark'), function($query){
-            $query->load('assignmentMark');
-        })
-        ->when($request->has('student'), function($query){
-            $query->load('student');
-        })
-        ->when($request->has('assignment'), function($query){
-            $query->load('assignment');
-        })
-        ->get();
+        $assignment_submission->load(array_filter([
+            $request->has('assignment_mark') ? 'assignmentMark' : null,
+            $request->has('student') ? 'student' : null,
+            $request->has('assignment') ? 'assignment' : null,
+        ]));
 
         return AssignmentSubmissionResource::make($assignment_submission);
     }
@@ -91,8 +85,8 @@ class AssignmentSubmissionController extends Controller
             abort(403);
         }
         $validated = $request->validated();
-        $assignment = Assignment::findOrFail($validated['assignment_id']);
-        $validated['student_id'] = $request->user->student->id;
+        $assignment = Assignment::findOrFail($validated['assignment_id'] ?? $assignment_submission->assignment_id);
+        $validated['student_id'] = $request->user()->student->id;
         $validated['submitted_at'] = now();
         $validated['status'] = (now() < $assignment->due_date) ? SubmissionStatus::ONTIME: SubmissionStatus::LATE;
         if(isset($validated['file'])){

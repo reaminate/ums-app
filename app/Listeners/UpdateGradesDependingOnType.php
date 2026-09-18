@@ -24,25 +24,33 @@ class UpdateGradesDependingOnType
      */
     public function handle(GradeUpdate $event): void
     {
-        $assignment_marks = $event->assginment_mark??0.0;
-        $exam_mark = $event->exam_mark??0.0;
-        $student_id = $exam_mark->student_id??$assignment_marks->assignment_submission_id->student_id;
-        $course_offering_id = $exam_mark->exam->course_offering_id ?? $assignment_marks->assignmentSubmission->assignment->course_offering_id;
+        $assignmentMark = $event->assginment_mark;
+        $examMark = $event->exam_mark;
+
+        $studentId = $examMark->student_id ?? $assignmentMark->assignmentSubmission->student_id;
+        $courseOfferingId = $examMark->exam->course_offering_id ?? $assignmentMark->assignmentSubmission->assignment->course_offering_id;
+        $assignmentScore = $assignmentMark->marks ?? 0.0;
+        $testMarks = $examMark->marks ?? 0.0;
+
         try {
-            DB::transaction(function() use($assignment_marks, $exam_mark, $student_id, $course_offering_id){
-            $grade = Grade::where('student_id', $student_id)
-            ->where('course_offering_id', $course_offering_id)->first();
-            $grade->incrementEach([
-                'total_assignment_score' => $assignment_marks, 
-                'total_test_marks' => $exam_mark,
+            DB::transaction(function () use ($assignmentScore, $testMarks, $studentId, $courseOfferingId) {
+                $grade = Grade::where('student_id', $studentId)
+                    ->where('course_offering_id', $courseOfferingId)
+                    ->first();
+
+                if (! $grade) {
+                    throw new InvalidArgumentException("No grade found for student {$studentId} in course offering {$courseOfferingId}.");
+                }
+
+                $grade->incrementEach([
+                    'total_assignment_score' => $assignmentScore,
+                    'total_test_marks' => $testMarks,
                 ]);
-            throw_if(($grade->total_assignment_score + $grade->total_test_marks)>100.0, InvalidArgumentException::class);   
-            }); 
+
+                throw_if(($grade->total_assignment_score + $grade->total_test_marks) > 100.0, InvalidArgumentException::class);
+            });
         } catch (InvalidArgumentException $e) {
-            DB::rollBack();
             report($e);
         }
-        
-         
     }
 }

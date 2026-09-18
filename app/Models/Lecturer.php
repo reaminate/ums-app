@@ -34,7 +34,7 @@ class Lecturer extends Model
     }
     protected static function booted():void
     {
-        static::creating(function($model){
+        static::created(function($model){
             $staff_id_number =(int) round(((($model->id + 576.57)*162.30987)-10)/30.3);
 
             $model->staff_number = "L0.$staff_id_number";

@@ -20,10 +20,10 @@ class AttendanceController extends Controller
         }
         $attendace = Attendance::query()
         ->when($request->has('student'), function($query){
-            $query->load('student');
+            $query->with('student');
         })
         ->when($request->has('class_schedule'), function($query){
-            $query->load('classSchedule');
+            $query->with('classSchedule');
         })
         ->cursorPaginate(10);
         return AttendanceResource::collection($attendace);
@@ -49,14 +49,10 @@ class AttendanceController extends Controller
         if($request->user()->cannot('view', $attendance)){
             abort(403);
         }
-        $attendance->query()
-        ->when($request->has('student'), function($query){
-            $query->load('student');
-        })
-        ->when($request->has('class_schedule'), function($query){
-            $query->load('classSchedule');
-        })
-        ->get();
+        $attendance->load(array_filter([
+            $request->has('student') ? 'student' : null,
+            $request->has('class_schedule') ? 'classSchedule' : null,
+        ]));
         return AttendanceResource::make($attendance);
     }
 

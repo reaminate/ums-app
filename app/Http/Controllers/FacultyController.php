@@ -20,7 +20,7 @@ class FacultyController extends Controller
         }
         $faculty = Faculty::query()
         ->when($request->has('departments'), function($query){
-            $query->load('departments');
+            $query->with('departments');
         })
         ->cursorPaginate(10);
         return FacultyResource::collection($faculty);
@@ -46,11 +46,9 @@ class FacultyController extends Controller
         if($request->user()->cannot('view', $faculty)){
             abort(403);
         }
-        $faculty->query()
-        ->when($request->has('departments'), function($query){
-            $query->load('departments');
-        })
-        ->get();
+        $faculty->load(array_filter([
+            $request->has('departments') ? 'departments' : null,
+        ]));
         return FacultyResource::make($faculty);
     }
 

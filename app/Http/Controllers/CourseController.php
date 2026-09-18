@@ -20,19 +20,19 @@ class CourseController extends Controller
         }
         $course = Course::query()
         ->when($request->has('department'), function($query){
-            $query->load('department');
+            $query->with('department');
         })
         ->when($request->has('academic_programs'), function($query){
-            $query->load('academicPrograms');
+            $query->with('academicPrograms');
         })
         ->when($request->has('course_offerings'), function($query){
-            $query->load('courseOfferings');
+            $query->with('courseOfferings');
         })
         ->when($request->has('prerequisites'), function($query){
-            $query->load('prerequisites');
+            $query->with('prerequisites');
         })
         ->when($request->has('prerequisite_for'), function($query){
-            $query->load('prerequisiteFor');
+            $query->with('prerequisiteFor');
         })
         ->cursorPaginate(10);
         return CourseResource::collection($course);
@@ -82,23 +82,13 @@ class CourseController extends Controller
         if($request->user()->cannot('view', $course)){
             abort(403);
         }
-        $course->query()
-        ->when($request->has('department'), function($query){
-            $query->load('department');
-        })
-        ->when($request->has('academic_programs'), function($query){
-            $query->load('academicPrograms');
-        })
-        ->when($request->has('course_offerings'), function($query){
-            $query->load('courseOfferings');
-        })
-        ->when($request->has('prerequisites'), function($query){
-            $query->load('prerequisites');
-        })
-        ->when($request->has('prerequisite_for'), function($query){
-            $query->load('prerequisiteFor');
-        })
-        ->get();
+        $course->load(array_filter([
+            $request->has('department') ? 'department' : null,
+            $request->has('academic_programs') ? 'academicPrograms' : null,
+            $request->has('course_offerings') ? 'courseOfferings' : null,
+            $request->has('prerequisites') ? 'prerequisites' : null,
+            $request->has('prerequisite_for') ? 'prerequisiteFor' : null,
+        ]));
         return CourseResource::make($course);
     }
 
@@ -140,6 +130,7 @@ class CourseController extends Controller
         $course->update($validated);
         $course->prerequisites()->sync($course_prerequisites);
         $course->prerequisiteFor()->sync($course_prerequisites_for);
+        return response('', 200);
     }
 
     /**

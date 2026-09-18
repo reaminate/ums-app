@@ -20,10 +20,10 @@ class GradeController extends Controller
         }
         $grade = Grade::query()
         ->when($request->has('student'), function($query){
-            $query->load('student');
+            $query->with('student');
         })
         ->when($request->has('course_offering'), function($query){
-            $query->load('courseOffering');
+            $query->with('courseOffering');
         })
         ->cursorPaginate(10);
         return GradeResource::collection($grade);
@@ -49,14 +49,10 @@ class GradeController extends Controller
         if($request->user()->cannot('view', $grade)){
             abort(403);
         }
-        $grade->query()
-        ->when($request->has('student'), function($query){
-            $query->load('student');
-        })
-        ->when($request->has('course_offering'), function($query){
-            $query->load('courseOffering');
-        })
-        ->get();
+        $grade->load(array_filter([
+            $request->has('student') ? 'student' : null,
+            $request->has('course_offering') ? 'courseOffering' : null,
+        ]));
         return GradeResource::make($grade);
     }
 

@@ -24,10 +24,10 @@ class ExamMarkController extends Controller
         }
         $exam_mark = ExamMark::query()
         ->when($request->has('exam'), function($query){
-            $query->load('exam');
+            $query->with('exam');
         })
         ->when($request->has('student'), function($query){
-            $query->load('student');
+            $query->with('student');
         })
         ->cursorPaginate(10);
         return ExamMarkResource::collection($exam_mark);
@@ -55,14 +55,10 @@ class ExamMarkController extends Controller
         if($request->user()->cannot('view', $exam_mark)){
             abort(403);
         }
-        $exam_mark->query()
-        ->when($request->has('exam'), function($query){
-            $query->load('exam');
-        })
-        ->when($request->has('student'), function($query){
-            $query->load('student');
-        })
-        ->get();
+        $exam_mark->load(array_filter([
+            $request->has('exam') ? 'exam' : null,
+            $request->has('student') ? 'student' : null,
+        ]));
         return ExamMarkResource::make($exam_mark);
     }
 

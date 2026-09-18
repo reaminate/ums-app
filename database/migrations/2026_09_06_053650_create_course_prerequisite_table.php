@@ -18,9 +18,11 @@ return new class extends Migration
             $table->unique(['course_id', 'prerequisite_id']);
         });
 
-        DB::statement(
-            'ALTER TABLE course_prerequisite ADD CONSTRAINT prerequisite_not_self CHECK (course_id <> prerequisite_id)'
-        );
+        if (DB::connection()->getDriverName() !== 'sqlite') {
+            DB::statement(
+                'ALTER TABLE course_prerequisite ADD CONSTRAINT prerequisite_not_self CHECK (course_id <> prerequisite_id)'
+            );
+        }
     }
 
     /**

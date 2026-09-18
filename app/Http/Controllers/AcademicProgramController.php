@@ -20,13 +20,13 @@ class AcademicProgramController extends Controller
         }
         $academicProgram = AcademicProgram::query();
         $academicProgram->when($request->has('department'), function($query){
-            $query->load('department');
+            $query->with('department');
         })
         ->when($request->has('courses'), function($query){
-            $query->load('courses');
+            $query->with('courses');
         })
         ->when($request->has('students'), function($query){
-            $query->load('students');
+            $query->with('students');
         })->cursorPaginate(10);
         return AcademicProgramResource::collection($academicProgram);
     }
@@ -40,6 +40,7 @@ class AcademicProgramController extends Controller
             abort(403);
         }
         $validated = $request->validated();
+        $courses_array = [];
         if(isset($validated['courses'])){
             $courses_array = $validated['courses'];
             unset($validated['courses']);
@@ -58,16 +59,11 @@ class AcademicProgramController extends Controller
         if($request->user()->cannot('view', $academic_program)){
             abort(403);
         }
-        $academic_program->query();
-        $academic_program->when($request->has('department'), function($query){
-            $query->load('department');
-        })
-        ->when($request->has('courses'), function($query){
-            $query->load('courses');
-        })
-        ->when($request->has('students'), function($query){
-            $query->load('students');
-        })->get();
+        $academic_program->load(array_filter([
+            $request->has('department') ? 'department' : null,
+            $request->has('courses') ? 'courses' : null,
+            $request->has('students') ? 'students' : null,
+        ]));
         return AcademicProgramResource::make($academic_program);
     }
 

@@ -22,10 +22,10 @@ class UserController extends Controller
         }
         $user = User::query()
         ->when($request->has('lecturer'), function($query){
-            $query->load('lecturer');
+            $query->with('lecturer');
         })
         ->when($request->has('student'), function($query){
-            $query->load('student');
+            $query->with('student');
         })
         ->cursorPaginate(10);
         return UserResource::collection($user);
@@ -54,14 +54,10 @@ class UserController extends Controller
         if($request->user()->cannot('view', $user)){
             abort(403);
         }
-        $user->query()
-        ->when($request->has('lecturer'), function($query){
-            $query->load('lecturer');
-        })
-        ->when($request->has('student'), function($query){
-            $query->load('student');
-        })
-        ->get();
+        $user->load(array_filter([
+            $request->has('lecturer') ? 'lecturer' : null,
+            $request->has('student') ? 'student' : null,
+        ]));
         return UserResource::make($user);
     }
 

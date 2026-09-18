@@ -20,10 +20,10 @@ class ExamController extends Controller
         }
         $exam = Exam::query()
         ->when($request->has('course_offering'), function($query){
-            $query->load('courseOffering');
+            $query->with('courseOffering');
         })
         ->when($request->has('exam_marks'), function($query){
-            $query->load('examMarks');
+            $query->with('examMarks');
         })
         ->cursorPaginate(10);
         return ExamResource::collection($exam);
@@ -49,14 +49,10 @@ class ExamController extends Controller
         if($request->user()->cannot('view', $exam)){
             abort(403);
         }
-        $exam->query()
-        ->when($request->has('course_offering'), function($query){
-            $query->load('courseOffering');
-        })
-        ->when($request->has('exam_marks'), function($query){
-            $query->load('examMarks');
-        })
-        ->get();
+        $exam->load(array_filter([
+            $request->has('course_offering') ? 'courseOffering' : null,
+            $request->has('exam_marks') ? 'examMarks' : null,
+        ]));
         return ExamResource::make($exam);
     }
 

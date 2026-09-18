@@ -49,7 +49,7 @@ class Student extends Model
     }
     protected static function booted():void
     {
-        static::creating(function($model){
+        static::created(function($model){
             $student_id_number =(int) round(((($model->id + 480.57)*160.30987)-26)/56.3);
 
             $model->student_number = "S0.$student_id_number";

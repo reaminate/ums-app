@@ -22,31 +22,31 @@ class CourseOfferingController extends Controller
         }
         $course_offering = CourseOffering::query()
         ->when($request->has('course'), function($query){
-            $query->load('course');
+            $query->with('course');
         })
         ->when($request->has('semester'), function($query){
-            $query->load('semester');
+            $query->with('semester');
         })
         ->when($request->has('lecturer'), function($query){
-            $query->load('lecturer');
+            $query->with('lecturer');
         })
         ->when($request->has('students'), function($query){
-            $query->load('students');
+            $query->with('students');
         })
         ->when($request->has('enrolled_students'), function($query){
-            $query->load('enrolledStudents');
+            $query->with('enrolledStudents');
         })
         ->when($request->has('class_schedules'), function($query){
-            $query->load('classSchedules');
+            $query->with('classSchedules');
         })
         ->when($request->has('assignments'), function($query){
-            $query->load('assignments');
+            $query->with('assignments');
         })
         ->when($request->has('exams'), function($query){
-            $query->load('exams');
+            $query->with('exams');
         })
         ->when($request->has('grades'), function($query){
-            $query->load('grades');
+            $query->with('grades');
         })
         ->cursorPaginate(10);
         return CourseOfferingResource::collection($course_offering);
@@ -62,7 +62,7 @@ class CourseOfferingController extends Controller
         }
 
         $course_offering = CourseOffering::create($request->validated());
-        $lecturer = Lecturer::find($course_offering->lecturer_id)->update(['status'=> LecturerStatus::TEACHING]);
+        Lecturer::findOrFail($course_offering->lecturer_id)->update(['status'=> LecturerStatus::TEACHING]);
         return response('', 201);
     }
 
@@ -74,35 +74,17 @@ class CourseOfferingController extends Controller
         if($request->user()->cannot('view', $course_offering)){
             abort(403);
         }
-        $course_offering->query()
-        ->when($request->has('course'), function($query){
-            $query->load('course');
-        })
-        ->when($request->has('semester'), function($query){
-            $query->load('semester');
-        })
-        ->when($request->has('lecturer'), function($query){
-            $query->load('lecturer');
-        })
-        ->when($request->has('students'), function($query){
-            $query->load('students');
-        })
-        ->when($request->has('enrolled_students'), function($query){
-            $query->load('enrolledStudents');
-        })
-        ->when($request->has('class_schedules'), function($query){
-            $query->load('classSchedules');
-        })
-        ->when($request->has('assignments'), function($query){
-            $query->load('assignments');
-        })
-        ->when($request->has('exams'), function($query){
-            $query->load('exams');
-        })
-        ->when($request->has('grades'), function($query){
-            $query->load('grades');
-        })
-        ->get();
+        $course_offering->load(array_filter([
+            $request->has('course') ? 'course' : null,
+            $request->has('semester') ? 'semester' : null,
+            $request->has('lecturer') ? 'lecturer' : null,
+            $request->has('students') ? 'students' : null,
+            $request->has('enrolled_students') ? 'enrolledStudents' : null,
+            $request->has('class_schedules') ? 'classSchedules' : null,
+            $request->has('assignments') ? 'assignments' : null,
+            $request->has('exams') ? 'exams' : null,
+            $request->has('grades') ? 'grades' : null,
+        ]));
         return CourseOfferingResource::make($course_offering);
     }
 

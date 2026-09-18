@@ -23,10 +23,10 @@ class AssignmentController extends Controller
         }
         $assignment = Assignment::query()
         ->when($request->has('course_offering'), function($query){
-            $query->load('courseOffering');
+            $query->with('courseOffering');
         })
         ->when($request->has('assignment_submission'), function($query){
-            $query->load('assignmentSubmissions');
+            $query->with('assignmentSubmissions');
         })
         ->cursorPaginate(10);
         return AssignmentResource::collection($assignment);
@@ -56,7 +56,7 @@ class AssignmentController extends Controller
             'status' => $validated['status'],
         ]);
         $course_offering = CourseOffering::findOrFail($assignment->course_offering_id);
-        $students = $course_offering->students->get();
+        $students = $course_offering->students;
         foreach($students as $student){
             $student->user->notify(new NewAssignmentPublished($assignment, $student));
         }
@@ -71,14 +71,10 @@ class AssignmentController extends Controller
         if($request->user()->cannot('view', $assignment)){
             abort(403);
         }
-        $assignment->query()
-        ->when($request->has('course_offering'), function($query){
-            $query->load('courseOffering');
-        })
-        ->when($request->has('assignment_submission'), function($query){
-            $query->load('assignmentSubmissions');
-        })
-        ->get();
+        $assignment->load(array_filter([
+            $request->has('course_offering') ? 'courseOffering' : null,
+            $request->has('assignment_submission') ? 'assignmentSubmissions' : null,
+        ]));
         return AssignmentResource::make($assignment);
     }
 
