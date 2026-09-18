@@ -33,9 +33,12 @@ class StoreUserRequest extends FormRequest
             'password' => ['required', Password::min(7)],
             'is_active' => ['required', 'boolean'],
             'program_id' => [
-                Rule::requiredIf(function () {
-                    return $this->input('type') === UserType::STUDENT->value;
-                }),
+                Rule::requiredIf(fn() => $this->input('type') === UserType::STUDENT->value),
+                 'exists:academic_programs,id'
+            ],
+            'department_id' => [
+                Rule::requiredIf(fn() => $this->input('type') === UserType::LECTURER->value),
+                'exists:departments,id'
             ],
         ];
     }
