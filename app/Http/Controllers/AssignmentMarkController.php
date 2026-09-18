@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\GradeUpdate;
 use App\Http\Resources\AssignmentMarkResource;
 use App\Models\AssignmentMark;
 use App\Http\Requests\StoreAssignmentMarkRequest;
 use App\Http\Requests\UpdateAssignmentMarkRequest;
-use App\Notifications\AssignmentGraded;
+use App\Services\AssignmentMarkService;
 use Illuminate\Http\Request;
 
 class AssignmentMarkController extends Controller
@@ -34,14 +33,12 @@ class AssignmentMarkController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreAssignmentMarkRequest $request)
+    public function store(StoreAssignmentMarkRequest $request, AssignmentMarkService $assignmentMarkService)
     {
         if($request->user()->cannot('create', AssignmentMark::class)){
             abort(403);
         }
-        $assignment_mark = AssignmentMark::create($request->validated());
-        $student = $assignment_mark->assignmentSubmission->student;
-        $student->user->notify(new AssignmentGraded($assignment_mark));
+        $assignmentMarkService->store($request->validated(), $request->user->lectruer->id);
         return response('', 201);
     }
 
@@ -67,20 +64,12 @@ class AssignmentMarkController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAssignmentMarkRequest $request, AssignmentMark $assignment_mark)
+    public function update(UpdateAssignmentMarkRequest $request, AssignmentMark $assignment_mark, AssignmentMarkService $assignmentMarkService)
     {
         if($request->user()->cannot('update', $assignment_mark)){
             abort(403);
         }
-        $validated = $request->validated();
-
-        $confirm = $validated['confirm']??false;
-        unset($validated['confirm']);
-
-        $assignment_mark->update($validated);
-        if($confirm){
-            GradeUpdate::dispatch($assignment_mark);
-        }
+        $assignmentMarkService->update($assignment_mark, $request->validated(), $request->user->lectruer->id);
         return response('', 200);
     }
 

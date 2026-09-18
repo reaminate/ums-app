@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\SubmissionStatus;
 use App\Http\Resources\AssignmentSubmissionResource;
+use App\Models\Assignment;
 use App\Models\AssignmentSubmission;
 use App\Http\Requests\StoreAssignmentSubmissionRequest;
 use App\Http\Requests\UpdateAssignmentSubmissionRequest;
@@ -40,7 +42,20 @@ class AssignmentSubmissionController extends Controller
         if($request->user()->cannot('create', AssignmentSubmission::class)){
             abort(403);
         }
-        AssignmentSubmission::create($request->validated());
+        $validated = $request->validated();
+        $file = $validated['file'];
+        $stored_path = $file->store('assignments', 'public');
+        $assignment = Assignment::findOrFail($validated['assignment_id']);
+        AssignmentSubmission::create([
+            'assignment_id' => $validated['assignment_id'],
+            'student_id' => $request->user->student->id,
+            'file_path' => $stored_path,
+            'original_name' =>  $file->getClientOriginalName(),
+            'mime_type' => $file->getMimeType(),
+            'comments' => $validated['comments'],
+            'submitted_at' => now(),
+            'status' => (now() < $assignment->due_date) ? SubmissionStatus::ONTIME: SubmissionStatus::LATE,
+        ]);
         return response('', 201);
     }
 
@@ -76,6 +91,10 @@ class AssignmentSubmissionController extends Controller
             abort(403);
         }
         $validated = $request->validated();
+        $assignment = Assignment::findOrFail($validated['assignment_id']);
+        $validated['student_id'] = $request->user->student->id;
+        $validated['submitted_at'] = now();
+        $validated['status'] = (now() < $assignment->due_date) ? SubmissionStatus::ONTIME: SubmissionStatus::LATE;
         if(isset($validated['file'])){
             $file = $validated['file'];
             $stored_path = $file->store('assignments', 'public');

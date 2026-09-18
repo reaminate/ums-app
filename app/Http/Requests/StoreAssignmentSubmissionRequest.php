@@ -27,7 +27,7 @@ class StoreAssignmentSubmissionRequest extends FormRequest
             'student_id' => ['required', 'exists:students,id', 'integer'],
             'file' => ['required', 'file', 'mimes:pdf,docx', 'max:5120'],
             'comments' => ['sometimes', 'string', 'max:200'],
-            'submited_at' => ['date', 'required', 'date_format:Y-m-d'],
+            //'submited_at' => ['date', 'required', 'date_format:Y-m-d'],
 
         ];
     }

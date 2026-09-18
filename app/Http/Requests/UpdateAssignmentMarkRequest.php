@@ -27,8 +27,8 @@ class UpdateAssignmentMarkRequest extends FormRequest
             'assignment_submission_id' => ['sometimes', 'exists:assignment_submissions,id', 'integer'],
             'marks' => ['sometimes', 'numeric', 'decimal:0,2'],
             'comments' => ['sometimes', 'string', 'max:200'],
-            'marked_at' => ['sometimes', 'date', 'date_format:Y-m-d'],
-            'lecturer_id' => ['sometimes', 'exists:lecturers,id', 'integer'],
+            //'marked_at' => ['sometimes', 'date', 'date_format:Y-m-d'],
+            //'lecturer_id' => ['sometimes', 'exists:lecturers,id', 'integer'],
             'confirm' => ['nullable', 'boolean', Rule::prohibitedIf(fn () => ! $this->filled('lecturer_id'))],
         ];
     }

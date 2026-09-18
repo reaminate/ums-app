@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\SubmissionStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -24,5 +25,11 @@ class AssignmentSubmission extends Model
     public function assignment():BelongsTo
     {
         return $this->belongsTo(Assignment::class, 'assignment_id');
+    }
+    protected function casts():array
+    {
+        return[
+            'status' => SubmissionStatus::class,
+        ];
     }
 }

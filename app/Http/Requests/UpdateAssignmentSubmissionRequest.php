@@ -24,10 +24,10 @@ class UpdateAssignmentSubmissionRequest extends FormRequest
     {
         return [
             'assignment_id' => ['sometimes', 'exists:assignments,id', 'integer', Rule::unique('assignment_submissions', 'assignment_id')->where('student_id', $this->input('student_id'))->ignore($this->route('assignment_submission'))],
-            'student_id' => ['sometimes', 'exists:students,id', 'integer'],
+            //'student_id' => ['sometimes', 'exists:students,id', 'integer'],
             'file' => ['sometimes', 'file', 'mimes:pdf,docx', 'max:5120'],
             'comments' => ['sometimes', 'string', 'max:200'],
-            'submited_at' => ['date', 'sometimes', 'date_format:Y-m-d'],
+            //'submited_at' => ['date', 'sometimes', 'date_format:Y-m-d'],
         ];
     }
 }
