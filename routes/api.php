@@ -21,7 +21,6 @@ use App\Http\Controllers\UserController;
 
 use Illuminate\Support\Facades\Route;
 Route::post('/login', [AuthController::class, 'login']);
-//not protected yet, testing out the controllers
 Route::middleware('auth:sanctum')->group(function(){
     Route::put('/student/{student}/enroll', [StudentController::class, 'enroll']);
     Route::get('/logout', [AuthController::class, 'logout']);
