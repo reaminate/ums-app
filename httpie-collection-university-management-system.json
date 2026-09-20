@@ -1,0 +1,1397 @@
+{
+  "meta": {
+    "format": "httpie",
+    "version": "1.0.0",
+    "contentType": "collection",
+    "schema": "https://schema.httpie.io/1.0.0.json",
+    "docs": "https://httpie.io/r/help/export-from-httpie",
+    "source": "HTTPie Desktop 2025.2.0"
+  },
+  "entry": {
+    "name": "University management system",
+    "icon": {
+      "name": "diamond",
+      "color": "purple"
+    },
+    "auth": {
+      "type": "none"
+    },
+    "requests": [
+      {
+        "name": "",
+        "url": "http://127.0.0.1:8000/api/student",
+        "method": "POST",
+        "headers": [],
+        "queryParams": [
+          {
+            "name": "user",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "academic_program",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "course_offerings",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "assignment_submissions",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "attendances",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "exam_marks",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "grades",
+            "value": "",
+            "enabled": true
+          }
+        ],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "form",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": [
+              {
+                "name": "name",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "email",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "program_id",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "enrollment_status",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "course_offerings",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              }
+            ]
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "",
+        "url": "http://127.0.0.1:8000/api/faculty",
+        "method": "POST",
+        "headers": [],
+        "queryParams": [
+          {
+            "name": "department",
+            "value": "",
+            "enabled": true
+          }
+        ],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "form",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": [
+              {
+                "name": "name",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "faculty_id",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              }
+            ]
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "",
+        "url": "http://127.0.0.1:8000/api/academic-program",
+        "method": "POST",
+        "headers": [],
+        "queryParams": [
+          {
+            "name": "department",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "courses",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "students",
+            "value": "",
+            "enabled": true
+          }
+        ],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "form",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": [
+              {
+                "name": "name",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "department_id",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "qualification_level",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "duration",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "required_credits",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "courses",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              }
+            ]
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "",
+        "url": "http://127.0.0.1:8000/api/lecturer",
+        "method": "POST",
+        "headers": [],
+        "queryParams": [
+          {
+            "name": "user",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "department",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "course_offerings",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "assignment_marks",
+            "value": "",
+            "enabled": true
+          }
+        ],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "form",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": [
+              {
+                "name": "name",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "email",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "department",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              }
+            ]
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "",
+        "url": "http://127.0.0.1:8000/api/academic-semester",
+        "method": "POST",
+        "headers": [],
+        "queryParams": [
+          {
+            "name": "course_offerings",
+            "value": "",
+            "enabled": true
+          }
+        ],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "form",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": [
+              {
+                "name": "name",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "year",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "start_date",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "end_date",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "registration_start_date",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "registration_end_date",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              }
+            ]
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "",
+        "url": "http://127.0.0.1:8000/api/assignment-mark",
+        "method": "POST",
+        "headers": [],
+        "queryParams": [
+          {
+            "name": "lecturer",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "assignment_submission",
+            "value": "",
+            "enabled": true
+          }
+        ],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "form",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": [
+              {
+                "name": "assignment_id",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "file",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "comments",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              }
+            ]
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "",
+        "url": "http://127.0.0.1:8000/api/assignment-submission",
+        "method": "POST",
+        "headers": [],
+        "queryParams": [
+          {
+            "name": "assignment_mark",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "student",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "assignment",
+            "value": "",
+            "enabled": true
+          }
+        ],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "form",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": [
+              {
+                "name": "assignment_id",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "file",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "comments",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              }
+            ]
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "",
+        "url": "http://127.0.0.1:8000/api/assignment",
+        "method": "POST",
+        "headers": [],
+        "queryParams": [
+          {
+            "name": "course_offering",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "assignment_submission",
+            "value": "",
+            "enabled": true
+          }
+        ],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "form",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": [
+              {
+                "name": "course_offering_id",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "title",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "description",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "due_date",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "max_marks",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "file",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              }
+            ]
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "",
+        "url": "http://127.0.0.1:8000/api/attendance",
+        "method": "POST",
+        "headers": [],
+        "queryParams": [
+          {
+            "name": "student",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "class_schedule",
+            "value": "",
+            "enabled": true
+          }
+        ],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "form",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": [
+              {
+                "name": "student_id",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "class_schedule_id",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "attendance_value",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "recorded_at",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              }
+            ]
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "",
+        "url": "http://127.0.0.1:8000/api/class-schedule",
+        "method": "POST",
+        "headers": [],
+        "queryParams": [
+          {
+            "name": "course_offering",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "attendances",
+            "value": "",
+            "enabled": true
+          }
+        ],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "form",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": [
+              {
+                "name": "course_offering_id",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "day",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "start_time",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "end_time",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "room_number",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              }
+            ]
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "",
+        "url": "http://127.0.0.1:8000/api/course",
+        "method": "POST",
+        "headers": [],
+        "queryParams": [
+          {
+            "name": "course_prerequisite",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "course_prerequisite_for",
+            "value": "",
+            "enabled": true
+          }
+        ],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "form",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": [
+              {
+                "name": "name",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "description",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "department_id",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "credit_value",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "course_level",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "course_prerequisite",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "course_prerequisite_for",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              }
+            ]
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "",
+        "url": "http://127.0.0.1:8000/api/course-offering",
+        "method": "POST",
+        "headers": [],
+        "queryParams": [
+          {
+            "name": "course",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "semester",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "lecturer",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "students",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "enrolled_students",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "class_schedules",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "assignments",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "exams",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "grades",
+            "value": "",
+            "enabled": true
+          }
+        ],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "form",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": [
+              {
+                "name": "course_id",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "semester_id",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "lecturer_id",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "max_studets",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "start_date",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "end_date",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              }
+            ]
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "",
+        "url": "http://127.0.0.1:8000/api/department",
+        "method": "POST",
+        "headers": [],
+        "queryParams": [
+          {
+            "name": "faculty",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "academic_program",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "courses",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "lecturers",
+            "value": "",
+            "enabled": true
+          }
+        ],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "form",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": [
+              {
+                "name": "name",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "faculty_id",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              }
+            ]
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "",
+        "url": "http://127.0.0.1:8000/api/exam",
+        "method": "POST",
+        "headers": [],
+        "queryParams": [
+          {
+            "name": "course_offering",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "exam_marks",
+            "value": "",
+            "enabled": true
+          }
+        ],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "form",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": [
+              {
+                "name": "course_offering_id",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "exam_type",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "exam_date",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "max_marks",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "weight",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              }
+            ]
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "",
+        "url": "http://127.0.0.1:8000/exam-mark",
+        "method": "POST",
+        "headers": [],
+        "queryParams": [
+          {
+            "name": "exam",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "student",
+            "value": "",
+            "enabled": true
+          }
+        ],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "form",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": [
+              {
+                "name": "exma_id",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "students_id",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "marks",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              }
+            ]
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "",
+        "url": "http://127.0.0.1:8000/api/grade",
+        "method": "POST",
+        "headers": [],
+        "queryParams": [
+          {
+            "name": "student",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "course_offering",
+            "value": "",
+            "enabled": true
+          }
+        ],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "form",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": [
+              {
+                "name": "student_id",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "course_offering_id",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "total_assignment_score",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "total_test_marks",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              }
+            ]
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "",
+        "url": "http://127.0.0.1:8000/api/user",
+        "method": "POST",
+        "headers": [],
+        "queryParams": [
+          {
+            "name": "lecturer",
+            "value": "",
+            "enabled": true
+          },
+          {
+            "name": "student",
+            "value": "",
+            "enabled": true
+          }
+        ],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "form",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": [
+              {
+                "name": "name",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "type",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "email",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "password",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "is_active",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "program_id",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "department_id",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              }
+            ]
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "",
+        "url": "http://127.0.0.1:8000/api/student/2/enroll",
+        "method": "GET",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "",
+        "url": "http://127.0.0.1:8000/api/login",
+        "method": "POST",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "form",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": [
+              {
+                "name": "email",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "password",
+                "value": "",
+                "enabled": true,
+                "type": "text"
+              }
+            ]
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "",
+        "url": "http://127.0.0.1:8000/api/logout",
+        "method": "GET",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      }
+    ]
+  }
+}

@@ -25,7 +25,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function(){
     Route::put('/student/{student}/enroll', [StudentController::class, 'enroll']);
     Route::get('/logout', [AuthController::class, 'logout']);
-    Route::post('/course-offering/{id}/enroll');
+    // Route::post('/course-offering/{id}/enroll');
 
     //force delete and restore
     Route::delete('/assignment-mark/{assignment_mark}/forcedelete', [AssignmentMarkController::class, 'forceDelete'])->withTrashed();
