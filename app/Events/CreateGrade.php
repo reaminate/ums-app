@@ -2,8 +2,8 @@
 
 namespace App\Events;
 
-use App\Models\AssignmentMark;
-use App\Models\ExamMark;
+use App\Models\CourseOffering;
+use App\Models\Student;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -12,14 +12,14 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class GradeUpdate
+class CreateGrade
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(public ?AssignmentMark $assginment_mark = null, public ?ExamMark $exam_mark =null)
+    public function __construct(public Student $student,public  CourseOffering $course_offering)
     {
         //
     }

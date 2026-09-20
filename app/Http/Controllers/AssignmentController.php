@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateAssignmentRequest;
 use App\Models\CourseOffering;
 use App\Models\Student;
 use App\Notifications\NewAssignmentPublished;
+use App\Services\AssignmentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 class AssignmentController extends Controller
@@ -35,31 +36,13 @@ class AssignmentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreAssignmentRequest $request)
+    public function store(StoreAssignmentRequest $request, AssignmentService $assignment_service)
     {
         if($request->user()->cannot('create', Assignment::class)){
             abort(403);
         }
         $validated = $request->validated();
-        $file = $validated['file'];
-        $stored_path = $file->store('assignments', 'public');
-
-        $assignment = Assignment::create([
-            'course_offering_id' => $validated['course_offering_id'],
-            'title' => $validated['title'],
-            'description' => $validated['description'],
-            'due_date' => $validated['due_date'],
-            'max_marks' => $validated['max_marks'],
-            'file_path' => $stored_path,
-            'original_name' =>  $file->getClientOriginalName(),
-            'mime_type' => $file->getMimeType(),
-            'status' => $validated['status'],
-        ]);
-        $course_offering = CourseOffering::findOrFail($assignment->course_offering_id);
-        $students = $course_offering->students;
-        foreach($students as $student){
-            $student->user->notify(new NewAssignmentPublished($assignment, $student));
-        }
+        $assignment_service->store($validated);
         return response('', 201);
     }
 
@@ -81,21 +64,13 @@ class AssignmentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAssignmentRequest $request, Assignment $assignment)
+    public function update(UpdateAssignmentRequest $request, Assignment $assignment, AssignmentService $assignment_service)
     {
         if($request->user()->cannot('update', $assignment)){
             abort(403);
         }
         $validated = $request->validated();
-        if(isset($validated['file'])){
-            $file = $validated['file'];
-            $stored_path = $file->store('assignments', 'public');
-            $validated['file_path'] = $stored_path;
-            $validated['original_name'] = $file->getClientOriginalName();
-            $validated['mime_type'] = $file->getMimeType();
-            unset($validated['file']);
-        }
-        $assignment->update($validated);
+        $assignment_service->update($validated, $assignment);
         return response('', 200);
     }
 

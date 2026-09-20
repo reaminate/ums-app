@@ -8,6 +8,7 @@ use App\Models\Assignment;
 use App\Models\AssignmentSubmission;
 use App\Http\Requests\StoreAssignmentSubmissionRequest;
 use App\Http\Requests\UpdateAssignmentSubmissionRequest;
+use App\Services\AssignmentSubmissionService;
 use Illuminate\Http\Request;
 
 class AssignmentSubmissionController extends Controller
@@ -37,25 +38,13 @@ class AssignmentSubmissionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreAssignmentSubmissionRequest $request)
+    public function store(StoreAssignmentSubmissionRequest $request, AssignmentSubmissionService $assignment_submission_service)
     {
         if($request->user()->cannot('create', AssignmentSubmission::class)){
             abort(403);
         }
         $validated = $request->validated();
-        $file = $validated['file'];
-        $stored_path = $file->store('assignments', 'public');
-        $assignment = Assignment::findOrFail($validated['assignment_id']);
-        AssignmentSubmission::create([
-            'assignment_id' => $validated['assignment_id'],
-            'student_id' => $request->user()->student->id,
-            'file_path' => $stored_path,
-            'original_name' =>  $file->getClientOriginalName(),
-            'mime_type' => $file->getMimeType(),
-            'comments' => $validated['comments'],
-            'submitted_at' => now(),
-            'status' => (now() < $assignment->due_date) ? SubmissionStatus::ONTIME: SubmissionStatus::LATE,
-        ]);
+        $assignment_submission_service->create($validated, $request->user()->student);
         return response('', 201);
     }
 
@@ -79,25 +68,13 @@ class AssignmentSubmissionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAssignmentSubmissionRequest $request, AssignmentSubmission $assignment_submission)
+    public function update(UpdateAssignmentSubmissionRequest $request, AssignmentSubmission $assignment_submission, AssignmentSubmissionService $assignment_submission_service)
     {
         if($request->user()->cannot('update', $assignment_submission)){
             abort(403);
         }
         $validated = $request->validated();
-        $assignment = Assignment::findOrFail($validated['assignment_id'] ?? $assignment_submission->assignment_id);
-        $validated['student_id'] = $request->user()->student->id;
-        $validated['submitted_at'] = now();
-        $validated['status'] = (now() < $assignment->due_date) ? SubmissionStatus::ONTIME: SubmissionStatus::LATE;
-        if(isset($validated['file'])){
-            $file = $validated['file'];
-            $stored_path = $file->store('assignments', 'public');
-            $validated['file_path'] = $stored_path;
-            $validated['original_name'] = $file->getClientOriginalName();
-            $validated['mime_type'] = $file->getMimeType();
-            unset($validated['file']);
-        }
-        $assignment_submission->update($validated);
+        $assignment_submission_service->update($validated, $assignment_submission, $request->user()->student);
         return response('', 200);
     }
 
@@ -111,5 +88,26 @@ class AssignmentSubmissionController extends Controller
         }
         $assignment_submission->delete();
         return response()->noContent();
+    }
+    /**
+     * restore the model
+     */
+    public function restore(AssignmentSubmission $assignment_submission, Request $request)
+    {
+        if($request->user()->cannot('restore', $assignment_submission)){
+            abort(403);
+        }
+        $assignment_submission->restore();
+    }
+
+    /**
+     * permanently deletes a model
+     */
+    public function forceDelete(AssignmentSubmission $assignment_submission, Request $request)
+    {
+        if($request->user()->cannot('forceDelete', $assignment_submission)){
+            abort(403);
+        }
+        $assignment_submission->forceDelete();
     }
 }

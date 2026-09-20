@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
         ]);
         User::factory(75)->create(['type' => UserType::LECTURER->value]);
-        User::factory(100)->create(['type' => UserType::STUDENT->value]);
+        User::factory(150)->create(['type' => UserType::STUDENT->value]);
         $this->call([
             FacultySeeder::class,
             DepartmentSeeder::class,

@@ -117,4 +117,25 @@ class LecturerController extends Controller
         $lecturer->delete();
         return response()->noContent();
     }
+    /**
+     * restore the model
+     */
+    public function restore(Lecturer $lecturer, Request $request)
+    {
+        if($request->user()->cannot('restore', $lecturer)){
+            abort(403);
+        }
+        $lecturer->restore();
+    }
+
+    /**
+     * permanently deletes a model
+     */
+    public function forceDelete(Lecturer $lecturer, Request $request)
+    {
+        if($request->user()->cannot('forceDelete', $lecturer)){
+            abort(403);
+        }
+        $lecturer->forceDelete();
+    }
 }

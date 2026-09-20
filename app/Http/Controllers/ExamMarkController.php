@@ -91,4 +91,25 @@ class ExamMarkController extends Controller
         $exam_mark->delete();
         return response()->noContent();
     }
+    /**
+     * restore the model
+     */
+    public function restore(ExamMark $exam_mark, Request $request)
+    {
+        if($request->user()->cannot('restore', $exam_mark)){
+            abort(403);
+        }
+        $exam_mark->restore();
+    }
+
+    /**
+     * permanently deletes a model
+     */
+    public function forceDelete(ExamMark $exam_mark, Request $request)
+    {
+        if($request->user()->cannot('forceDelete', $exam_mark)){
+            abort(403);
+        }
+        $exam_mark->forceDelete();
+    }
 }

@@ -32,14 +32,14 @@ class GradeController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreGradeRequest $request)
-    {
-        if($request->user()->cannot('create', Grade::class)){
-            abort(403);
-        }
-        Grade::create($request->validated());
-        return response('', 201);
-    }
+    // public function store(StoreGradeRequest $request)
+    // {
+    //     if($request->user()->cannot('create', Grade::class)){
+    //         abort(403);
+    //     }
+    //     Grade::create($request->validated());
+    //     return response('', 201);
+    // }
 
     /**
      * Display the specified resource.
@@ -78,5 +78,26 @@ class GradeController extends Controller
         }
         $grade->delete();
         return response()->noContent();
+    }
+    /**
+     * restore the model
+     */
+    public function restore(Grade $grade, Request $request)
+    {
+        if($request->user()->cannot('restore', $grade)){
+            abort(403);
+        }
+        $grade->restore();
+    }
+
+    /**
+     * permanently deletes a model
+     */
+    public function forceDelete(Grade $grade, Request $request)
+    {
+        if($request->user()->cannot('forceDelete', $grade)){
+            abort(403);
+        }
+        $grade->forceDelete();
     }
 }

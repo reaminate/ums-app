@@ -21,7 +21,7 @@ php artisan serve
 
 The seeder creates:
 - One admin user: `admin@example.com` / `password`
-- 100 lecturer users and 200 student users (via `UserFactory`, random passwords)
+- lecturer users and student users (via `UserFactory`, random passwords)
 - Full sample data for every table (faculties, departments, programs, courses, offerings, enrollments, schedules, attendance, assignments, exams, grades)
 
 All API routes are served under `/api`.
@@ -320,6 +320,16 @@ Relations are **not** eager-loaded by default. Pass the relation name as a query
 | `POST /assignment-mark` | `assignment_submission_id`, `marks`, `comments` | Marks are automatically weighted (×1.0 on-time, ×0.8 late, ×0.0 not submitted); `lecturer_id` comes from the authenticated user |
 | `PUT /exam-mark/{id}` | ...plus `confirm` (bool) | When `confirm: true`, dispatches a `GradeUpdate` event that recalculates the student's `grades` row |
 
+### Soft Deletes
+The following models/controllers now have soft deletion
+|AssignmentMark|
+|AssignmentSubmission|
+|Department|
+|ExamMark|
+|Faculty|
+|Grade|
+|Lecturer|
+|Student|
 ### Custom endpoints
 
 | Method | Endpoint | Description |

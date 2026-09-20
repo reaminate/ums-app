@@ -27,6 +27,31 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('/logout', [AuthController::class, 'logout']);
     Route::post('/course-offering/{id}/enroll');
 
+    //force delete and restore
+    Route::delete('/assignment-mark/{assignment_mark}/forcedelete', [AssignmentMarkController::class, 'forceDelete'])->withTrashed();
+    Route::get('/assignment-mark/{assignment_mark}/restore', [AssignmentMarkController::class, 'restore'])->withTrashed();
+
+    Route::delete('/assignment-submission/{assignment_submission}/forcedelete', [AssignmentSubmissionController::class, 'forceDelete'])->withTrashed();
+    Route::get('/assignment-submission/{assignment_submission}/restore', [AssignmentSubmissionController::class, 'restore'])->withTrashed();
+
+    Route::delete('/department/{department}/forcedelete', [DepartmentController::class, 'forceDelete'])->withTrashed();
+    Route::get('/department/{department}/restore', [DepartmentController::class, 'restore'])->withTrashed();
+
+    Route::delete('/exam-mark/{exam_mark}/forcedelete', [ExamMarkController::class, 'forceDelete'])->withTrashed();
+    Route::get('/exam-mark/{exam_mark}/restore', [ExamMarkController::class, 'restore'])->withTrashed();
+
+    Route::delete('/faculty/{faculty}/forcedelete', [FacultyController::class, 'forceDelete'])->withTrashed();
+    Route::get('/faculty/{faculty}/restore', [FacultyController::class, 'restore'])->withTrashed();
+
+    Route::delete('/grade/{grade}/forcedelete', [GradeController::class, 'forceDelete'])->withTrashed();
+    Route::get('/grade/{grade}/restore', [GradeController::class, 'restore'])->withTrashed();
+
+    Route::delete('/lecturer/{lecturer}/forcedelete', [LecturerController::class, 'forceDelete'])->withTrashed();
+    Route::get('/lecturer/{lecturer}/restore', [LecturerController::class, 'restore'])->withTrashed();
+
+    Route::delete('/student/{student}/forcedelete', [StudentController::class, 'forceDelete'])->withTrashed();
+    Route::get('/student/{student}/restore', [StudentController::class, 'restore'])->withTrashed();
+
     Route::apiResource('/academic-program', AcademicProgramController::class);
     Route::apiResource('/academic-semester', AcademicSemesterController::class);
     Route::apiResource('/assignment', AssignmentController::class);

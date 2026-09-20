@@ -161,4 +161,25 @@ class StudentController extends Controller
             'message' => 'success'
         ], 200);
     }
+    /**
+     * restore the model
+     */
+    public function restore(Student $student, Request $request)
+    {
+        if($request->user()->cannot('restore', $student)){
+            abort(403);
+        }
+        $student->restore();
+    }
+
+    /**
+     * permanently deletes a model
+     */
+    public function forceDelete(Student $student, Request $request)
+    {
+        if($request->user()->cannot('forceDelete', $student)){
+            abort(403);
+        }
+        $student->forceDelete();
+    }
 }

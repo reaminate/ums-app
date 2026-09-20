@@ -80,4 +80,25 @@ class AssignmentMarkController extends Controller
         $assignment_mark->delete();
         return response()->noContent();
     }
+    /**
+     * restore the model
+     */
+    public function restore(AssignmentMark $assignment_mark, Request $request)
+    {
+        if($request->user()->cannot('restore', $assignment_mark)){
+            abort(403);
+        }
+        $assignment_mark->restore();
+    }
+
+    /**
+     * permanently deletes a model
+     */
+    public function forceDelete(AssignmentMark $assignment_mark, Request $request)
+    {
+        if($request->user()->cannot('forceDelete', $assignment_mark)){
+            abort(403);
+        }
+        $assignment_mark->forceDelete();
+    }
 }

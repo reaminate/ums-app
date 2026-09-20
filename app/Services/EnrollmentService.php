@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\EnrollmentStatus;
+use App\Events\CreateGrade;
 use App\Models\Enrollment;
 use App\Models\Student;
 use App\Notifications\EnrollmentStatusUpdate;
@@ -15,7 +16,6 @@ class EnrollmentService
     /**
      * Enroll a student into every course offering they are pending (not yet enrolled) in.
      *
-     * @return array<int, array{course_offering_id: int, reason: string}> failed enrollments
      */
     public function enroll(Student $student): array
     {
@@ -39,6 +39,7 @@ class EnrollmentService
                     'status' => EnrollmentStatus::ENROLLED->value,
                     'enrolled_at' => now(),
                 ]);
+                CreateGrade::dispatch($student, $enrollment);
                 DB::commit();
                 $student->user->notify(new EnrollmentStatusUpdate($student, $enrollment, EnrollmentStatus::ENROLLED->name));
             } catch (ModelNotFoundException $e) {

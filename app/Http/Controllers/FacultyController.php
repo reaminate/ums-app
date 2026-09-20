@@ -75,4 +75,25 @@ class FacultyController extends Controller
         $faculty->delete();
         return response()->noContent();
     }
+    /**
+     * restore the model
+     */
+    public function restore(Faculty $faculty, Request $request)
+    {
+        if($request->user()->cannot('restore', $faculty)){
+            abort(403);
+        }
+        $faculty->restore();
+    }
+
+    /**
+     * permanently deletes a model
+     */
+    public function forceDelete(Faculty $faculty, Request $request)
+    {
+        if($request->user()->cannot('forceDelete', $faculty)){
+            abort(403);
+        }
+        $faculty->forceDelete();
+    }
 }

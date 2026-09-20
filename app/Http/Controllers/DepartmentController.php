@@ -87,4 +87,25 @@ class DepartmentController extends Controller
         $department->delete();
         return response()->noContent();
     }
+    /**
+     * restore the model
+     */
+    public function restore(Department $department, Request $request)
+    {
+        if($request->user()->cannot('restore', $department)){
+            abort(403);
+        }
+        $department->restore();
+    }
+
+    /**
+     * permanently deletes a model
+     */
+    public function forceDelete(Department $department, Request $request)
+    {
+        if($request->user()->cannot('forceDelete', $department)){
+            abort(403);
+        }
+        $department->forceDelete();
+    }
 }

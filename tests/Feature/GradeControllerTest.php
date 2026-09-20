@@ -11,55 +11,6 @@ class GradeControllerTest extends TestCase
 {
     use RefreshDatabase, CreatesTestData;
 
-    public function test_a_lecturer_can_record_a_grade(): void
-    {
-        Sanctum::actingAs($this->lecturerUser());
-        $courseOffering = $this->courseOffering();
-        $student = $this->student();
-        $this->enroll($student, $courseOffering);
-
-        $response = $this->postJson('/api/grade', [
-            'student_id' => $student->id,
-            'course_offering_id' => $courseOffering->id,
-            'total_assignment_score' => '30.00',
-            'total_test_marks' => '40.00',
-        ]);
-
-        $response->assertCreated();
-        $this->assertDatabaseHas('grades', ['student_id' => $student->id, 'course_offering_id' => $courseOffering->id]);
-    }
-
-    public function test_recording_a_grade_requires_a_lecturer_or_admin(): void
-    {
-        Sanctum::actingAs($this->studentUser());
-        $courseOffering = $this->courseOffering();
-        $student = $this->student();
-
-        $response = $this->postJson('/api/grade', [
-            'student_id' => $student->id,
-            'course_offering_id' => $courseOffering->id,
-            'total_assignment_score' => '30.00',
-            'total_test_marks' => '40.00',
-        ]);
-
-        $response->assertForbidden();
-    }
-
-    public function test_store_requires_the_scores_to_have_two_decimal_places(): void
-    {
-        Sanctum::actingAs($this->lecturerUser());
-        $courseOffering = $this->courseOffering();
-        $student = $this->student();
-
-        $response = $this->postJson('/api/grade', [
-            'student_id' => $student->id,
-            'course_offering_id' => $courseOffering->id,
-            'total_assignment_score' => '30.001',
-            'total_test_marks' => '40.00',
-        ]);
-
-        $response->assertUnprocessable()->assertJsonValidationErrors('total_assignment_score');
-    }
 
     public function test_a_lecturer_can_update_a_grade(): void
     {
